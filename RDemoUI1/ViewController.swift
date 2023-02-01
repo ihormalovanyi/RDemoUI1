@@ -9,6 +9,8 @@ import UIKit
 
 final class ViewController: UIViewController {
 
+    private var countOfBoxes = 0
+    
     private var flowLayout: UICollectionViewFlowLayout = {
         let result = UICollectionViewFlowLayout()
         result.itemSize = .init(width: 150, height: 150)
@@ -17,13 +19,15 @@ final class ViewController: UIViewController {
     }()
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+    private var button = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupCollection()
+        setupButton()
     }
     
-    private func setupUI() {
+    private func setupCollection() {
         collectionView.dataSource = self
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.backgroundColor = .red
@@ -37,6 +41,24 @@ final class ViewController: UIViewController {
         ])
         collectionView.reloadData()
     }
+    
+    private func setupButton() {
+        button.setTitle("Add one", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.addTarget(self, action: #selector(addOneAction), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+    
+    @objc private func addOneAction() {
+        countOfBoxes += 1
+        collectionView.reloadData()
+        collectionView.scrollToItem(at: .init(row: countOfBoxes - 1, section: 0), at: .right, animated: true)
+    }
 
 }
 
@@ -47,7 +69,7 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        countOfBoxes
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
