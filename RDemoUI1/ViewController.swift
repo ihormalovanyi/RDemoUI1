@@ -29,6 +29,7 @@ final class ViewController: UIViewController {
     }
     
     private func setupCollection() {
+        collectionView.clipsToBounds = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
@@ -58,6 +59,36 @@ final class ViewController: UIViewController {
     
     @objc private func addOneAction() {
         add()
+    }
+    
+    @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translationY = recognizer.translation(in: recognizer.view).y
+        
+        switch recognizer.state {
+        case .began, .changed:
+            recognizer.view?.transform = .init(translationX: 0, y: translationY)
+        case .cancelled, .failed:
+            UIView.animate(withDuration: 0.25) {
+                recognizer.view?.transform = .identity
+            }
+        case .ended:
+            if translationY < -75 {
+                UIView.animate(withDuration: 0.25) {
+                    recognizer.view?.transform = .init(translationX: 0, y: -500)
+                    recognizer.view?.alpha = 0
+                } completion: { _ in
+                    if let cell = recognizer.view as? UICollectionViewCell,
+                       let indexPath = self.collectionView.indexPath(for: cell) {
+                        self.delete(at: indexPath.row)
+                    }
+                }
+            } else {
+                UIView.animate(withDuration: 0.25) {
+                    recognizer.view?.transform = .identity
+                }
+            }
+        case .possible: break
+        }
     }
     
 }
@@ -97,6 +128,15 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
         cell.contentView.backgroundColor = .black
+        
+        guard cell.gestureRecognizers?.contains(where: { $0.name == "PanToRemove" }) == true else {
+            let recognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
+            recognizer.name = "PanToRemove"
+            cell.addGestureRecognizer(recognizer)
+            
+            return cell
+        }
+        
         return cell
     }
     
