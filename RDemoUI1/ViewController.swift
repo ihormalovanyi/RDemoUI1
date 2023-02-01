@@ -9,6 +9,7 @@ import UIKit
 
 final class ViewController: UIViewController {
 
+    private var lock = NSRecursiveLock()
     private var countOfBoxes = 0
     
     private var flowLayout: UICollectionViewFlowLayout = {
@@ -21,7 +22,7 @@ final class ViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
     private var button = UIButton()
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupCollection()
         setupButton()
@@ -56,11 +57,31 @@ final class ViewController: UIViewController {
     }
     
     @objc private func addOneAction() {
-        countOfBoxes += 1
-        collectionView.reloadData()
-        collectionView.scrollToItem(at: .init(row: countOfBoxes - 1, section: 0), at: .right, animated: true)
+        add()
     }
+    
+}
 
+//MARK: - API
+extension ViewController {
+    
+    func add() {
+        DispatchQueue.main.async {
+            self.countOfBoxes += 1
+            self.collectionView.insertItems(at: [.init(row: self.countOfBoxes - 1, section: 0)])
+            self.collectionView.scrollToItem(at: .init(row: self.countOfBoxes - 1, section: 0), at: .right, animated: true)
+        }
+    }
+    
+    func delete(at index: Int) {
+        DispatchQueue.main.async {
+            self.countOfBoxes -= 1
+            UIView.animate(withDuration: 0.5) {
+                self.collectionView.deleteItems(at: [.init(row: index, section: 0)])
+            }
+        }
+    }
+    
 }
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -80,10 +101,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        countOfBoxes -= 1
-        UIView.animate(withDuration: 0.5) {
-            self.collectionView.deleteItems(at: [indexPath])
-        }
+        delete(at: indexPath.row)
     }
     
 }
