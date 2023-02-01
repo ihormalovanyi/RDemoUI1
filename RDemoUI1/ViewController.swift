@@ -29,6 +29,7 @@ final class ViewController: UIViewController {
     
     private func setupCollection() {
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.backgroundColor = .red
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -62,7 +63,7 @@ final class ViewController: UIViewController {
 
 }
 
-extension ViewController: UICollectionViewDataSource {
+extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
@@ -77,5 +78,12 @@ extension ViewController: UICollectionViewDataSource {
         cell.contentView.backgroundColor = .black
         return cell
     }
-
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        countOfBoxes -= 1
+        UIView.animate(withDuration: 0.5) {
+            self.collectionView.deleteItems(at: [indexPath])
+        }
+    }
+    
 }
