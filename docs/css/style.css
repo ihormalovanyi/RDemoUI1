@@ -173,14 +173,13 @@ body {
 .card {
   pointer-events: auto;
   width: min(480px, 88vw);
-  background: var(--card-bg);
+  background: rgba(13, 19, 30, 0.94);
   border: 1px solid var(--card-border);
   border-radius: 14px;
   padding: 34px 36px 26px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  will-change: opacity, transform;
+  transform: translateY(112vh); /* стартує за нижнім краєм екрана */
+  will-change: transform;
 }
 
 .card.side-left  { margin-right: auto; }

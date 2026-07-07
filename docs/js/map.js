@@ -228,17 +228,22 @@ const MAP = (() => {
     }, svg);
     [LEG1, LEG2, LEG3].forEach(leg => el('path', { d: smooth(leg) }, preview));
 
-    /* перельоти (з'являються у пролозі та фіналі) */
+    /* перельоти (з'являються у пролозі та фіналі)
+       «сяйво» — ширша напівпрозора лінія замість дорогого blur-фільтра */
+    const flightLine = (d, parent) => {
+      el('path', {
+        d, fill: 'none', stroke: 'rgba(86,156,255,0.25)',
+        'stroke-width': 7.5, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+      }, parent);
+      return el('path', {
+        d, fill: 'none', stroke: 'rgba(140,190,255,0.95)',
+        'stroke-width': 2.4, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+      }, parent);
+    };
     const flightInG = el('g', { opacity: 0 }, svg);
-    const flightInPath = el('path', {
-      d: FLIGHT_IN, fill: 'none', stroke: 'rgba(86,156,255,0.95)',
-      'stroke-width': 2.6, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round', filter: 'url(#f-glow)',
-    }, flightInG);
+    const flightInPath = flightLine(FLIGHT_IN, flightInG);
     const flightOutG = el('g', { opacity: 0 }, svg);
-    const flightOutPath = el('path', {
-      d: FLIGHT_OUT, fill: 'none', stroke: 'rgba(86,156,255,0.95)',
-      'stroke-width': 2.6, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round', filter: 'url(#f-glow)',
-    }, flightOutG);
+    const flightOutPath = flightLine(FLIGHT_OUT, flightOutG);
 
     /* нічне таксі Ель-Прат → Ла Пінеда */
     const taxiG = el('g', { opacity: 0 }, svg);
@@ -266,16 +271,19 @@ const MAP = (() => {
     /* маршрут, який промальовується */
     const routeG = el('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
     const legs = [LEG1, LEG2, LEG3].map((leg, i) => {
+      const color = i === 2 ? '#d96c4f' : '#e0a458';
+      /* «сяйво» без blur-фільтра — ширша напівпрозора лінія */
+      const halo = el('path', {
+        d: smooth(leg), stroke: color, opacity: 0.2, 'stroke-width': 10,
+      }, routeG);
       /* підкладка-«дорога» */
       const casing = el('path', {
         d: smooth(leg), stroke: 'rgba(4,7,12,0.55)', 'stroke-width': 7,
       }, routeG);
       const line = el('path', {
-        d: smooth(leg),
-        stroke: i === 2 ? 'var(--accent-2, #d96c4f)' : 'var(--accent, #e0a458)',
-        'stroke-width': 3.4, filter: 'url(#f-glow)',
+        d: smooth(leg), stroke: color, 'stroke-width': 3.4,
       }, routeG);
-      return { line, casing, len: 0 }; /* довжина обчислюється після вставки в DOM */
+      return { line, casing, halo, len: 0 }; /* довжина обчислюється після вставки в DOM */
     });
 
     /* мінорні міста */
@@ -322,8 +330,9 @@ const MAP = (() => {
 
     /* маркер-мандрівник */
     const marker = el('g', { id: 'traveler', opacity: 0 }, svg);
+    el('circle', { r: 18, fill: 'rgba(224,164,88,0.12)' }, marker);
     el('circle', { r: 11, fill: 'rgba(224,164,88,0.25)' }, marker);
-    el('circle', { r: 5, fill: '#f4d9ac', filter: 'url(#f-glow)' }, marker);
+    el('circle', { r: 5, fill: '#f4d9ac' }, marker);
 
     /* літачки, що летять дугами перельотів */
     const planeShape =
@@ -333,11 +342,11 @@ const MAP = (() => {
     const mkPlane = () => {
       const g = el('g', { opacity: 0 }, svg);
       /* м'який синій ореол під корпусом */
-      el('circle', { r: 17, fill: 'rgba(86,156,255,0.28)', filter: 'url(#f-glow)' }, g);
+      el('circle', { r: 24, fill: 'rgba(86,156,255,0.14)' }, g);
+      el('circle', { r: 16, fill: 'rgba(86,156,255,0.28)' }, g);
       el('path', {
         d: planeShape, fill: '#f2f8ff',
         stroke: 'rgba(86,156,255,0.9)', 'stroke-width': 1.2,
-        filter: 'url(#f-glow)',
       }, g);
       return g;
     };
@@ -347,10 +356,10 @@ const MAP = (() => {
     /* довжини відрізків — після вставки в DOM */
     legs.forEach(l => {
       l.len = l.line.getTotalLength();
-      l.line.setAttribute('stroke-dasharray', l.len);
-      l.line.setAttribute('stroke-dashoffset', l.len);
-      l.casing.setAttribute('stroke-dasharray', l.len);
-      l.casing.setAttribute('stroke-dashoffset', l.len);
+      [l.line, l.casing, l.halo].forEach(p => {
+        p.setAttribute('stroke-dasharray', l.len);
+        p.setAttribute('stroke-dashoffset', l.len);
+      });
     });
 
     return {

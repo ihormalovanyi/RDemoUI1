@@ -53,6 +53,8 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, t) => a + (b - a) * t;
   const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  const easeInCubic = t => t * t * t;
 
   function shotAt(scrollY) {
     const kf = keyframes;
@@ -97,6 +99,7 @@
       const off = leg.len * (1 - f);
       leg.line.setAttribute('stroke-dashoffset', off);
       leg.casing.setAttribute('stroke-dashoffset', off);
+      leg.halo.setAttribute('stroke-dashoffset', off);
     });
 
     /* маркер їде кінчиком промальованого маршруту */
@@ -110,9 +113,11 @@
 
   /* ---------- додаткові шари: перельоти, таксі, вилазки ---------- */
 
+  const pathLenCache = new WeakMap();
   function placePlane(plane, path, ft, visible) {
     if (!visible) { plane.setAttribute('opacity', 0); return; }
-    const len = path.getTotalLength();
+    let len = pathLenCache.get(path);
+    if (!len) { len = path.getTotalLength(); pathLenCache.set(path, len); }
     const p = path.getPointAtLength(len * ft);
     const p2 = path.getPointAtLength(Math.min(len, len * ft + 2));
     const ang = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI + 90;
@@ -150,13 +155,22 @@
       const span = s.offsetHeight - vh;
       const t = clamp((scrollY - s.offsetTop) / Math.max(span, 1), -0.2, 1.2);
       driveExtras(key, clamp(t, 0, 1));
-      /* плавно з'являється на вході в сцену, зникає на виході */
-      let o;
-      if (i === 0) o = 1 - clamp(t * 2.4, 0, 1);                       /* герой тане */
-      else o = clamp(t * 4, 0, 1) * (1 - clamp((t - 0.82) * 6, 0, 1)); /* картки */
-      card.style.opacity = o.toFixed(3);
-      card.style.transform = `translateY(${(1 - o) * 26}px)`;
-      card.style.visibility = o < 0.02 ? 'hidden' : 'visible';
+      if (i === 0 || i === ORDER.length - 1) {
+        /* герой і титри — м'яке розчинення */
+        const o = i === 0
+          ? 1 - clamp(t * 2.4, 0, 1)
+          : clamp(t * 4, 0, 1);
+        card.style.opacity = o.toFixed(3);
+        card.style.visibility = o < 0.02 ? 'hidden' : 'visible';
+      } else {
+        /* картки-«шторки»: вилітають знизу і ховаються вниз */
+        const enter = easeOutCubic(clamp(t * 3, 0, 1));
+        const exit = easeInCubic(clamp((t - 0.78) * 5, 0, 1));
+        const off = 1 - enter + exit;
+        card.style.transform = `translateY(${(off * 112).toFixed(2)}vh)`;
+        /* поза своєю секцією sticky відпускає картку — ховаємо повністю */
+        card.style.visibility = (t <= -0.01 || t >= 1.01) ? 'hidden' : 'visible';
+      }
     });
 
     /* активна точка навігації */
@@ -182,27 +196,49 @@
   /* ---------- цикл ---------- */
 
   let targetShot = { ...SHOTS.hero };
+  let lastY = -1, prevT = 0, settled = false;
 
   function frame(now) {
-    const k = reduceMotion ? 1 : 0.085;
-    cam.x = lerp(cam.x, targetShot.x, k);
-    cam.y = lerp(cam.y, targetShot.y, k);
-    cam.z = lerp(cam.z, targetShot.z, k);
-    routeSmooth = lerp(routeSmooth, targetShot.route, k * 1.4);
+    const dt = Math.min(0.1, (now - prevT) / 1000 || 0.016);
+    prevT = now;
 
-    applyCamera();
-    applyRoute(routeSmooth);
+    /* реагуємо на скрол раз на кадр, а не на кожну подію */
+    const y = scrollY;
+    if (y !== lastY) {
+      lastY = y;
+      targetShot = shotAt(y);
+      applyCards(y);
+      settled = false;
+    }
+
+    if (!settled) {
+      /* незалежне від FPS згладжування */
+      const a = reduceMotion ? 1 : 1 - Math.exp(-dt * 6.5);
+      cam.x = lerp(cam.x, targetShot.x, a);
+      cam.y = lerp(cam.y, targetShot.y, a);
+      cam.z = lerp(cam.z, targetShot.z, a);
+      routeSmooth = lerp(routeSmooth, targetShot.route, a * 1.3);
+
+      /* коли доїхали — фіксуємось і перестаємо чіпати DOM */
+      if (Math.abs(cam.x - targetShot.x) < 0.05 &&
+          Math.abs(cam.y - targetShot.y) < 0.05 &&
+          Math.abs(cam.z - targetShot.z) < 0.0008 &&
+          Math.abs(routeSmooth - targetShot.route) < 0.0006) {
+        cam.x = targetShot.x; cam.y = targetShot.y; cam.z = targetShot.z;
+        routeSmooth = targetShot.route;
+        settled = true;
+      }
+      applyCamera();
+      applyRoute(routeSmooth);
+    }
     requestAnimationFrame(frame);
   }
 
-  function onScroll() {
-    const y = scrollY;
-    targetShot = shotAt(y);
-    applyCards(y);
-  }
-
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', () => { measure(); onScroll(); });
+  addEventListener('resize', () => {
+    measure();
+    lastY = -1;   /* форсуємо перерахунок наступного кадру */
+    settled = false;
+  });
 
   /* навігація точками */
   navBtns.forEach((btn, i) => {
@@ -232,9 +268,12 @@
 
   /* старт */
   measure();
-  onScroll();
+  targetShot = shotAt(scrollY);
+  applyCards(scrollY);
   Object.assign(cam, targetShot);
   routeSmooth = targetShot.route;
+  applyCamera();
+  applyRoute(routeSmooth);
   requestAnimationFrame(frame);
 
 })();
