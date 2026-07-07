@@ -113,6 +113,7 @@ body {
 .panel { position: relative; }
 
 #s-hero        { height: 220vh; }
+#s-arrival     { height: 220vh; }
 #s-pineda      { height: 260vh; }
 #s-narbonne    { height: 300vh; }
 #s-carcassonne { height: 260vh; }

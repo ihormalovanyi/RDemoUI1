@@ -26,6 +26,7 @@
   <!-- Stage navigation -->
   <nav id="waypoints" aria-label="Route stages">
     <button data-goto="hero"        title="Start"><i></i><span>Start</span></button>
+    <button data-goto="arrival"     title="The flight"><i></i><span>The flight</span></button>
     <button data-goto="pineda"      title="La Pineda"><i></i><span>La Pineda</span></button>
     <button data-goto="narbonne"    title="Narbonne"><i></i><span>Narbonne</span></button>
     <button data-goto="carcassonne" title="Carcassonne"><i></i><span>Carcassonne</span></button>
@@ -38,7 +39,7 @@
     <section class="panel" id="s-hero" data-stage="hero">
       <div class="pin">
         <div class="hero-content">
-          <p class="kicker">a road movie for two · summer 2026</p>
+          <p class="kicker">a road movie for two · 25 june — 8 july 2026</p>
           <h1>Road<br>for&nbsp;Two</h1>
           <p class="route-line">
             La Pineda <span>→</span> Narbonne <span>→</span> Carcassonne <span>→</span> Barcelona
@@ -48,17 +49,34 @@
       </div>
     </section>
 
+    <section class="panel" id="s-arrival" data-stage="arrival">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">00 · night arrival</p>
+            <h2>The Flight</h2>
+            <p class="meta">25.06 · Bratislava → Barcelona El Prat</p>
+          </header>
+          <p class="story">
+            We land just in time to watch the last bus leave.
+            A night taxi down the coast instead — asleep in La Pineda by midnight.
+          </p>
+          <footer class="leg">taxi · ~100 km along the coast</footer>
+        </article>
+      </div>
+    </section>
+
     <section class="panel" id="s-pineda" data-stage="pineda">
       <div class="pin">
         <article class="card side-left">
           <header>
             <p class="stage-no">01 · the start</p>
             <h2>La Pineda</h2>
-            <p class="meta">Costa Daurada, Spain</p>
+            <p class="meta">Costa Daurada, Spain · 25–30.06</p>
           </header>
           <p class="story">
-            Golden sand, a shallow warm sea, one long promenade.
-            A few quiet days — and a route sketched on a napkin.
+            Five slow days: swimming, long walks, breakfasts by the sea.
+            Day trips to Tarragona (26.06) and Salou (27.06).
           </p>
           <!-- journal: step-by-step notes go here -->
           <div class="photos">
@@ -66,7 +84,7 @@
             <figure class="photo" data-ph="I"><img data-src="photos/pineda-2.jpg" alt="La Pineda — photo 2"><figcaption>the promenade</figcaption></figure>
             <figure class="photo" data-ph="N"><img data-src="photos/pineda-3.jpg" alt="La Pineda — photo 3"><figcaption>the two of us</figcaption></figure>
           </div>
-          <footer class="leg">next: Narbonne · ~290 km north</footer>
+          <footer class="leg">next: two buses, then a high-speed train north</footer>
         </article>
       </div>
     </section>
@@ -77,11 +95,12 @@
           <header>
             <p class="stage-no">02 · crossing the border</p>
             <h2>Narbonne</h2>
-            <p class="meta">Occitanie, France · Rome's first colony in Gaul</p>
+            <p class="meta">Occitanie, France · 30.06–01.07</p>
           </header>
           <p class="story">
-            Over the Pyrenees and into France. The Canal de la Robine,
-            croissants at Les Halles, a Roman road in the middle of the square.
+            Bus to Tarragona, bus to Camp de Tarragona, then a high-speed
+            train across the border. The Canal de la Robine, croissants
+            at Les Halles, a Roman road in the middle of the square.
           </p>
           <!-- journal: step-by-step notes go here -->
           <div class="photos">
@@ -89,7 +108,7 @@
             <figure class="photo" data-ph="A"><img data-src="photos/narbonne-2.jpg" alt="Narbonne — photo 2"><figcaption>Les Halles</figcaption></figure>
             <figure class="photo" data-ph="R"><img data-src="photos/narbonne-3.jpg" alt="Narbonne — photo 3"><figcaption>old town</figcaption></figure>
           </div>
-          <footer class="leg">next: Carcassonne · ~60 km west</footer>
+          <footer class="leg">next: Carcassonne · 30 min by local train</footer>
         </article>
       </div>
     </section>
@@ -100,11 +119,12 @@
           <header>
             <p class="stage-no">03 · the middle ages</p>
             <h2>Carcassonne</h2>
-            <p class="meta">UNESCO citadel · 52 towers above the Aude</p>
+            <p class="meta">UNESCO citadel · 01–03.07</p>
           </header>
           <p class="story">
-            From afar La Cité looks like a film set — up close, even better.
-            Double walls, and a sunset we had almost to ourselves.
+            Two days between the lower town and the fortress. And on 02.07 —
+            a concert inside the castle walls: Clair Obscur: Expedition 33,
+            A&nbsp;Painted Symphony.
           </p>
           <!-- journal: step-by-step notes go here -->
           <div class="photos">
@@ -112,7 +132,7 @@
             <figure class="photo" data-ph="A"><img data-src="photos/carcassonne-2.jpg" alt="Carcassonne — photo 2"><figcaption>between the walls</figcaption></figure>
             <figure class="photo" data-ph="R"><img data-src="photos/carcassonne-3.jpg" alt="Carcassonne — photo 3"><figcaption>sunset</figcaption></figure>
           </div>
-          <footer class="leg">next: Barcelona · ~300 km back south</footer>
+          <footer class="leg">next: Barcelona · bus back south, 03.07</footer>
         </article>
       </div>
     </section>
@@ -123,11 +143,12 @@
           <header>
             <p class="stage-no">04 · the finale</p>
             <h2>Barcelona</h2>
-            <p class="meta">Catalonia, Spain</p>
+            <p class="meta">Catalonia, Spain · 03–08.07 · staying in Badalona</p>
           </header>
           <p class="story">
-            Back over the same mountains, somehow different now.
-            Gaudí, the Gothic Quarter, vermouth at six — and a sea that feels like ours.
+            Bus over the mountains, metro to Badalona — our home for five days.
+            Park Güell, Sagrada Família, Plaça de Catalunya, the aquarium,
+            Ciutadella, the waterfront — and Badalona's own beach.
           </p>
           <!-- journal: step-by-step notes go here -->
           <div class="photos">
@@ -135,7 +156,7 @@
             <figure class="photo" data-ph="C"><img data-src="photos/barcelona-2.jpg" alt="Barcelona — photo 2"><figcaption>Gothic Quarter</figcaption></figure>
             <figure class="photo" data-ph="N"><img data-src="photos/barcelona-3.jpg" alt="Barcelona — photo 3"><figcaption>Barceloneta</figcaption></figure>
           </div>
-          <footer class="leg">end of the route · ~650 km together</footer>
+          <footer class="leg">08.07 · metro to the airport, flight home</footer>
         </article>
       </div>
     </section>
@@ -144,9 +165,9 @@
       <div class="pin">
         <div class="hero-content finale-content">
           <p class="kicker">credits</p>
-          <h1 class="small">~650 km.<br>Two countries.<br>One story.</h1>
+          <h1 class="small">200,000 steps.<br>130 km on foot.<br>One story.</h1>
           <p class="route-line">La Pineda · Narbonne · Carcassonne · Barcelona</p>
-          <p class="credits">shot &amp; directed by the two of us</p>
+          <p class="credits">25.06 → 08.07 · shot &amp; directed by the two of us</p>
         </div>
       </div>
     </section>

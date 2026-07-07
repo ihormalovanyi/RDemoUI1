@@ -21,12 +21,12 @@ const MAP = (() => {
     [941, 217], [994, 171], [1078, 133], [1140, 96],
   ];
 
-  /* Маршрут: три відрізки (туди узбережжям, на захід, назад) */
-  const LEG1 = [ // Ла Пінеда → Нарбонн (AP-7 / A9)
-    [295, 1045], [340, 1022], [386, 1000], [434, 950], [498, 904],
-    [545, 880], [599, 851], [650, 822], [697, 798], [748, 711],
-    [787, 600], [762, 543], [750, 505], [769, 437], [776, 384],
-    [792, 361], [792, 311], [799, 253],
+  /* Маршрут: три головні відрізки (туди, на захід, назад) */
+  const LEG1 = [ // Ла Пінеда → автобуси до Camp de Tarragona → TGV до Нарбонна
+    [295, 1045], [319, 1035], [325, 1014], [368, 995], [434, 950],
+    [498, 904], [545, 880], [599, 851], [650, 822], [697, 798],
+    [748, 711], [787, 600], [762, 543], [750, 505], [769, 437],
+    [776, 384], [792, 361], [792, 311], [799, 253],
   ];
   const LEG2 = [ // Нарбонн → Каркассон (A61)
     [799, 253], [770, 247], [731, 247], [683, 244], [641, 245], [616, 242],
@@ -46,9 +46,28 @@ const MAP = (() => {
 
   const MINOR = [
     { x: 319, y: 1035, name: 'Tarragona', dx: 10, dy: -8 },
+    { x: 277, y: 1054, name: 'Salou',     dx: -10, dy: 16, anchor: 'end' },
+    { x: 588, y: 915,  name: 'Badalona',  dx: 12, dy: -6 },
     { x: 748, y: 711,  name: 'Girona',    dx: -12, dy: -8, anchor: 'end' },
     { x: 769, y: 437,  name: 'Perpignan', dx: -12, dy: 4,  anchor: 'end' },
     { x: 868, y: 194,  name: 'Béziers',   dx: 12,  dy: -4 },
+  ];
+
+  /* Додаткові шляхи: переліт, таксі, одноденні вилазки, метро */
+  const AIRPORT = { x: 540, y: 969 }; // Ель-Прат
+  const FLIGHT_IN  = 'M1150,-120 C 980,180 720,520 540,969';
+  const FLIGHT_OUT = 'M540,969 C 760,560 1020,180 1230,-120';
+  const TAXI = [
+    [540, 969], [510, 985], [468, 996], [430, 1006], [386, 1006],
+    [350, 1026], [319, 1037], [295, 1045],
+  ];
+  const TRIPS = [
+    [[295, 1045], [305, 1038], [319, 1035]],  // Таррагона, 26.06
+    [[295, 1045], [285, 1050], [277, 1054]],  // Салоу, 27.06
+  ];
+  const METRO = [[566, 946], [576, 930], [588, 918]];
+  const DEPART = [
+    [588, 918], [576, 930], [566, 946], [552, 958], [540, 969],
   ];
 
   /* Кордон Іспанія/Франція вздовж Піренеїв */
@@ -209,6 +228,41 @@ const MAP = (() => {
     }, svg);
     [LEG1, LEG2, LEG3].forEach(leg => el('path', { d: smooth(leg) }, preview));
 
+    /* перельоти (з'являються у пролозі та фіналі) */
+    const flightInG = el('g', { opacity: 0 }, svg);
+    const flightInPath = el('path', {
+      d: FLIGHT_IN, fill: 'none', stroke: 'rgba(170,200,230,0.75)',
+      'stroke-width': 2, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+    }, flightInG);
+    const flightOutG = el('g', { opacity: 0 }, svg);
+    const flightOutPath = el('path', {
+      d: FLIGHT_OUT, fill: 'none', stroke: 'rgba(170,200,230,0.75)',
+      'stroke-width': 2, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+    }, flightOutG);
+
+    /* нічне таксі Ель-Прат → Ла Пінеда */
+    const taxiG = el('g', { opacity: 0 }, svg);
+    el('path', {
+      d: smooth(TAXI), fill: 'none', stroke: '#e0a458',
+      'stroke-width': 2.6, 'stroke-dasharray': '1 7', 'stroke-linecap': 'round',
+    }, taxiG);
+
+    /* одноденні вилазки з Ла Пінеди та метро Барселона ↔ Бадалона */
+    const dotted = pts => el('path', {
+      d: smooth(pts), fill: 'none', stroke: 'rgba(232,226,212,0.65)',
+      'stroke-width': 2.2, 'stroke-dasharray': '1 8', 'stroke-linecap': 'round',
+    });
+    const tripsG = el('g', { opacity: 0 }, svg);
+    TRIPS.forEach(t => tripsG.appendChild(dotted(t)));
+    const metroG = el('g', { opacity: 0 }, svg);
+    metroG.appendChild(dotted(METRO));
+    const departG = el('g', { opacity: 0 }, svg);
+    departG.appendChild(dotted(DEPART));
+
+    /* аеропорт Ель-Прат */
+    const apG = el('g', {}, svg);
+    el('circle', { cx: AIRPORT.x, cy: AIRPORT.y, r: 3.4, fill: 'none', stroke: 'rgba(170,200,230,0.8)', 'stroke-width': 1.6 }, apG);
+
     /* маршрут, який промальовується */
     const routeG = el('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
     const legs = [LEG1, LEG2, LEG3].map((leg, i) => {
@@ -271,6 +325,13 @@ const MAP = (() => {
     el('circle', { r: 11, fill: 'rgba(224,164,88,0.25)' }, marker);
     el('circle', { r: 5, fill: '#f4d9ac', filter: 'url(#f-glow)' }, marker);
 
+    /* літачки, що летять дугами перельотів */
+    const planeShape = 'M0,-9 L2.2,-2 L9,1.5 L2.5,3 L1.5,8 L0,6.5 L-1.5,8 L-2.5,3 L-9,1.5 L-2.2,-2 Z';
+    const planeIn = el('g', { opacity: 0 }, svg);
+    el('path', { d: planeShape, fill: '#cfe0f0', filter: 'url(#f-glow)' }, planeIn);
+    const planeOut = el('g', { opacity: 0 }, svg);
+    el('path', { d: planeShape, fill: '#cfe0f0', filter: 'url(#f-glow)' }, planeOut);
+
     /* довжини відрізків — після вставки в DOM */
     legs.forEach(l => {
       l.len = l.line.getTotalLength();
@@ -283,6 +344,11 @@ const MAP = (() => {
     return {
       legs, stops: STOPS, stopNodes, marker,
       farLabels: far, nearLabels: near, world: WORLD,
+      extras: {
+        flightIn: flightInG, flightInPath, planeIn,
+        flightOut: flightOutG, flightOutPath, planeOut,
+        taxi: taxiG, trips: tripsG, metro: metroG, depart: departG,
+      },
     };
   }
 
