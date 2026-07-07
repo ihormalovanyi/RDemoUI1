@@ -170,20 +170,34 @@ body {
 
 /* ---------- картки етапів ---------- */
 
+/* Картка — постійна панель: десктоп ліворуч, мобільний знизу.
+   Вміст змінюється лише при зміні етапу (клас .on). */
 .card {
-  pointer-events: auto;
-  width: min(480px, 88vw);
+  position: fixed;
+  left: 5vw;
+  top: 50%;
+  z-index: 2;
+  width: min(460px, 88vw);
   background: rgba(13, 19, 30, 0.94);
   border: 1px solid var(--card-border);
   border-radius: 14px;
-  padding: 34px 36px 26px;
+  padding: 32px 34px 24px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  transform: translateY(112vh); /* стартує за нижнім краєм екрана */
-  will-change: transform;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(calc(-50% + 26px));
+  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0s linear 0.55s;
+  will-change: transform, opacity;
 }
 
-.card.side-left  { margin-right: auto; }
-.card.side-right { margin-left: auto; }
+.card.on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
 
 .stage-no {
   font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase;
@@ -256,16 +270,27 @@ body {
 /* ---------- адаптив ---------- */
 
 @media (max-width: 760px) {
-  .pin { padding: 0 5vw; align-items: flex-end; }
+  .pin { padding: 0 5vw; }
 
+  /* на телефоні картка — завжди нижній лист */
   .card {
-    width: 100%; margin: 0 0 8vh !important;
-    padding: 24px 22px 18px;
-    max-height: 74vh; overflow-y: auto;
+    left: 3vw; right: 3vw; top: auto; bottom: 2.5vh;
+    width: auto;
+    padding: 22px 20px 16px;
+    max-height: 58vh; overflow-y: auto;
+    transform: translateY(115%);
+    transition: transform 0.55s cubic-bezier(0.22, 0.9, 0.3, 1), visibility 0s linear 0.55s;
+    opacity: 1;
   }
 
-  .card h2 { font-size: 34px; }
+  .card.on {
+    transform: translateY(0);
+    transition: transform 0.55s cubic-bezier(0.22, 0.9, 0.3, 1);
+  }
+
+  .card h2 { font-size: 32px; }
   .card .story { font-size: 14px; line-height: 1.65; }
+  .photos { gap: 8px; }
 
   #waypoints { right: 10px; gap: 12px; }
   #waypoints button span { display: none; }
