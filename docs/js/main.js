@@ -15,10 +15,11 @@
   const SHOTS = {
     /* титул — над Братиславою, звідки все починається */
     hero:        { x: 5080, y: -1890, z: 1.35, route: 0 },
+    /* фокус етапу — праворуч, бо панель з інформацією тепер ліворуч */
     pineda:      { x: 180, y: 990,  z: 2.35, route: 0 },
-    narbonne:    { x: 890, y: 320,  z: 2.35, route: 1 },
-    carcassonne: { x: 620, y: 300,  z: 2.55, route: 2 },
-    barcelona:   { x: 680, y: 890,  z: 2.35, route: 3 },
+    narbonne:    { x: 640, y: 320,  z: 2.35, route: 1 },
+    carcassonne: { x: 580, y: 300,  z: 2.55, route: 2 },
+    barcelona:   { x: 420, y: 890,  z: 2.35, route: 3 },
     /* z фіналу перераховується в measure(): має вміщати і Братиславу */
     finale:      { x: 2450, y: -280, z: 0.44, route: 3 },
   };
@@ -93,8 +94,8 @@
     if (t > 0.58) {
       const bt = easeInOut(clamp((t - 0.58) / 0.34, 0, 1));
       shot = {
-        x: lerp(shot.x, 660, bt),
-        y: lerp(shot.y, 800, bt),
+        x: lerp(shot.x, 400, bt),
+        y: lerp(shot.y, 880, bt),
         z: lerp(shot.z, 1.5, bt),
         route: 0,
       };
@@ -223,6 +224,8 @@
 
   /* ---------- картки та інтерфейс ---------- */
 
+  let activeCard = -2;
+
   function applyCards(scrollY) {
     ORDER.forEach((key, i) => {
       const card = cards[i];
@@ -238,17 +241,6 @@
           : clamp(t * 4, 0, 1);
         card.style.opacity = o.toFixed(3);
         card.style.visibility = o < 0.02 ? 'hidden' : 'visible';
-      } else {
-        /* картки-«шторки»: вилітають знизу і ховаються вниз;
-           у прольоті — тільки після посадки літака */
-        const enter = key === 'arrival'
-          ? easeOutCubic(clamp((t - 0.56) * 5, 0, 1))
-          : easeOutCubic(clamp(t * 3, 0, 1));
-        const exit = easeInCubic(clamp((t - 0.78) * 5, 0, 1));
-        const off = 1 - enter + exit;
-        card.style.transform = `translateY(${(off * 112).toFixed(2)}vh)`;
-        /* поза своєю секцією sticky відпускає картку — ховаємо повністю */
-        card.style.visibility = (t <= -0.01 || t >= 1.01) ? 'hidden' : 'visible';
       }
     });
 
@@ -256,6 +248,16 @@
     let active = 0;
     navKF.forEach((kf, i) => { if (scrollY > kf.y - vh * 0.5) active = i; });
     navBtns.forEach((b, i) => b.classList.toggle('active', i === active));
+
+    /* панель з інформацією: постійно на екрані, вміст міняється зі зміною етапу */
+    const cardIdx = active >= 1 && active <= ORDER.length - 2 ? active : -1;
+    if (cardIdx !== activeCard) {
+      activeCard = cardIdx;
+      ORDER.forEach((k, i) => {
+        const c = cards[i];
+        if (c && c.classList.contains('card')) c.classList.toggle('on', i === cardIdx);
+      });
+    }
 
     /* пульс активної зупинки */
     const activeKey = ORDER[active];
