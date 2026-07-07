@@ -1,15 +1,15 @@
-# Фотографії подорожі
+# Trip photos
 
-Поклади сюди свої знімки — сайт підхопить їх автоматично (зараз замість них показуються стильні заглушки).
+Drop your photos here — the site picks them up automatically (stylish placeholders are shown until then).
 
-Очікувані імена файлів (формат JPG, будь-який розмір; найкраще — вертикальні 3:4):
+Expected file names (JPG, any size; vertical 3:4 works best):
 
-| Етап | Файли |
+| Stage | Files |
 |---|---|
-| Ла Пінеда | `pineda-1.jpg`, `pineda-2.jpg`, `pineda-3.jpg` |
-| Нарбонн | `narbonne-1.jpg`, `narbonne-2.jpg`, `narbonne-3.jpg` |
-| Каркассон | `carcassonne-1.jpg`, `carcassonne-2.jpg`, `carcassonne-3.jpg` |
-| Барселона | `barcelona-1.jpg`, `barcelona-2.jpg`, `barcelona-3.jpg` |
+| La Pineda | `pineda-1.jpg`, `pineda-2.jpg`, `pineda-3.jpg` |
+| Narbonne | `narbonne-1.jpg`, `narbonne-2.jpg`, `narbonne-3.jpg` |
+| Carcassonne | `carcassonne-1.jpg`, `carcassonne-2.jpg`, `carcassonne-3.jpg` |
+| Barcelona | `barcelona-1.jpg`, `barcelona-2.jpg`, `barcelona-3.jpg` |
 
-Можна додати лише частину — для відсутніх фото залишаться заглушки.
-Підписи під фото редагуються в `docs/index.html` (теги `<figcaption>`).
+You can add just a few — placeholders remain for the missing ones.
+Captions are edited in `docs/index.html` (the `<figcaption>` tags).

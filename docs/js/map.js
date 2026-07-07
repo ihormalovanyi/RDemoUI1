@@ -38,17 +38,17 @@ const MAP = (() => {
   ];
 
   const STOPS = {
-    pineda:      { x: 295, y: 1045, name: 'Ла Пінеда',  anchor: 'end',   dx: -16, dy: 6 },
-    narbonne:    { x: 799, y: 253,  name: 'Нарбонн',    anchor: 'start', dx: 16,  dy: -12 },
-    carcassonne: { x: 616, y: 242,  name: 'Каркассон',  anchor: 'middle', dx: 0,  dy: -22 },
-    barcelona:   { x: 566, y: 946,  name: 'Барселона',  anchor: 'start', dx: 18,  dy: 22 },
+    pineda:      { x: 295, y: 1045, name: 'La Pineda',   anchor: 'end',   dx: -16, dy: 6 },
+    narbonne:    { x: 799, y: 253,  name: 'Narbonne',    anchor: 'start', dx: 16,  dy: -12 },
+    carcassonne: { x: 616, y: 242,  name: 'Carcassonne', anchor: 'middle', dx: 0,  dy: -22 },
+    barcelona:   { x: 566, y: 946,  name: 'Barcelona',   anchor: 'start', dx: 18,  dy: 22 },
   };
 
   const MINOR = [
-    { x: 319, y: 1035, name: 'Таррагона', dx: 10, dy: -8 },
-    { x: 748, y: 711,  name: 'Жирона',    dx: -12, dy: -8, anchor: 'end' },
-    { x: 769, y: 437,  name: 'Перпіньян', dx: -12, dy: 4,  anchor: 'end' },
-    { x: 868, y: 194,  name: 'Безьє',     dx: 12,  dy: -4 },
+    { x: 319, y: 1035, name: 'Tarragona', dx: 10, dy: -8 },
+    { x: 748, y: 711,  name: 'Girona',    dx: -12, dy: -8, anchor: 'end' },
+    { x: 769, y: 437,  name: 'Perpignan', dx: -12, dy: 4,  anchor: 'end' },
+    { x: 868, y: 194,  name: 'Béziers',   dx: 12,  dy: -4 },
   ];
 
   /* Кордон Іспанія/Франція вздовж Піренеїв */
@@ -192,15 +192,15 @@ const MAP = (() => {
       }, far);
       t.textContent = text;
     };
-    country(210, 760, 'ІСПАНІЯ', -6);
-    country(310, 105, 'ФРАНЦІЯ', 2);
+    country(210, 760, 'SPAIN', -6);
+    country(310, 105, 'FRANCE', 2);
     const seaT = el('text', {
       x: 720, y: 1005, fill: 'rgba(140,180,215,0.4)', 'font-size': 30,
       'letter-spacing': 9, 'font-style': 'italic',
       'font-family': "'Cormorant Garamond', Georgia, serif",
       transform: 'rotate(-28 720 1005)',
     }, far);
-    seaT.textContent = 'Середземне море';
+    seaT.textContent = 'Mediterranean Sea';
 
     /* майбутній маршрут — тонкий пунктир-прев'ю */
     const preview = el('g', {

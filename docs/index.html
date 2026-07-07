@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Дорога на двох · Ла Пінеда — Барселона</title>
-  <meta name="description" content="Кінематографічна мапа нашої подорожі: Ла Пінеда → Нарбонн → Каркассон → Барселона">
+  <title>Road for Two · La Pineda — Barcelona</title>
+  <meta name="description" content="A cinematic map of our road trip: La Pineda → Narbonne → Carcassonne → Barcelona">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <!-- Кіно-мапа: фіксована сцена позаду контенту -->
+  <!-- Cinematic map: fixed stage behind the content -->
   <div id="map-stage" aria-hidden="true">
     <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
   </div>
@@ -23,14 +23,14 @@
   <div class="letterbox top" aria-hidden="true"></div>
   <div class="letterbox bottom" aria-hidden="true"></div>
 
-  <!-- Навігація за етапами -->
-  <nav id="waypoints" aria-label="Етапи маршруту">
-    <button data-goto="hero"        title="Початок"><i></i><span>Початок</span></button>
-    <button data-goto="pineda"      title="Ла Пінеда"><i></i><span>Ла Пінеда</span></button>
-    <button data-goto="narbonne"    title="Нарбонн"><i></i><span>Нарбонн</span></button>
-    <button data-goto="carcassonne" title="Каркассон"><i></i><span>Каркассон</span></button>
-    <button data-goto="barcelona"   title="Барселона"><i></i><span>Барселона</span></button>
-    <button data-goto="finale"      title="Фінал"><i></i><span>Фінал</span></button>
+  <!-- Stage navigation -->
+  <nav id="waypoints" aria-label="Route stages">
+    <button data-goto="hero"        title="Start"><i></i><span>Start</span></button>
+    <button data-goto="pineda"      title="La Pineda"><i></i><span>La Pineda</span></button>
+    <button data-goto="narbonne"    title="Narbonne"><i></i><span>Narbonne</span></button>
+    <button data-goto="carcassonne" title="Carcassonne"><i></i><span>Carcassonne</span></button>
+    <button data-goto="barcelona"   title="Barcelona"><i></i><span>Barcelona</span></button>
+    <button data-goto="finale"      title="Credits"><i></i><span>Credits</span></button>
   </nav>
 
   <main id="scroll">
@@ -38,12 +38,12 @@
     <section class="panel" id="s-hero" data-stage="hero">
       <div class="pin">
         <div class="hero-content">
-          <p class="kicker">роуд-муві на двох · літо 2026</p>
-          <h1>Дорога<br>на&nbsp;двох</h1>
+          <p class="kicker">a road movie for two · summer 2026</p>
+          <h1>Road<br>for&nbsp;Two</h1>
           <p class="route-line">
-            Ла Пінеда <span>→</span> Нарбонн <span>→</span> Каркассон <span>→</span> Барселона
+            La Pineda <span>→</span> Narbonne <span>→</span> Carcassonne <span>→</span> Barcelona
           </p>
-          <p class="scroll-hint">гортай, щоб вирушити<br><span class="arrow">↓</span></p>
+          <p class="scroll-hint">scroll to set off<br><span class="arrow">↓</span></p>
         </div>
       </div>
     </section>
@@ -52,21 +52,21 @@
       <div class="pin">
         <article class="card side-left">
           <header>
-            <p class="stage-no">01 · старт</p>
-            <h2>Ла Пінеда</h2>
-            <p class="meta">Коста-Дорада, Іспанія · точка відліку</p>
+            <p class="stage-no">01 · the start</p>
+            <h2>La Pineda</h2>
+            <p class="meta">Costa Daurada, Spain</p>
           </header>
           <p class="story">
-            Тут усе починається: золотий пісок, тепле й мілке море та довга
-            набережна між Салоу і Таррагоною. Кілька днів тиші перед дорогою —
-            сніданки з видом на Середземне море і план маршруту на серветці.
+            Golden sand, a shallow warm sea, one long promenade.
+            A few quiet days — and a route sketched on a napkin.
           </p>
+          <!-- journal: step-by-step notes go here -->
           <div class="photos">
-            <figure class="photo" data-ph="П"><img data-src="photos/pineda-1.jpg" alt="Ла Пінеда — фото 1"><figcaption>пляж уранці</figcaption></figure>
-            <figure class="photo" data-ph="І"><img data-src="photos/pineda-2.jpg" alt="Ла Пінеда — фото 2"><figcaption>набережна</figcaption></figure>
-            <figure class="photo" data-ph="Н"><img data-src="photos/pineda-3.jpg" alt="Ла Пінеда — фото 3"><figcaption>ми вдвох</figcaption></figure>
+            <figure class="photo" data-ph="P"><img data-src="photos/pineda-1.jpg" alt="La Pineda — photo 1"><figcaption>morning beach</figcaption></figure>
+            <figure class="photo" data-ph="I"><img data-src="photos/pineda-2.jpg" alt="La Pineda — photo 2"><figcaption>the promenade</figcaption></figure>
+            <figure class="photo" data-ph="N"><img data-src="photos/pineda-3.jpg" alt="La Pineda — photo 3"><figcaption>the two of us</figcaption></figure>
           </div>
-          <footer class="leg">далі: Нарбонн · ~290 км узбережжям на північ</footer>
+          <footer class="leg">next: Narbonne · ~290 km north</footer>
         </article>
       </div>
     </section>
@@ -75,21 +75,21 @@
       <div class="pin">
         <article class="card side-right">
           <header>
-            <p class="stage-no">02 · перетин кордону</p>
-            <h2>Нарбонн</h2>
-            <p class="meta">Окситанія, Франція · перше римське місто Галлії</p>
+            <p class="stage-no">02 · crossing the border</p>
+            <h2>Narbonne</h2>
+            <p class="meta">Occitanie, France · Rome's first colony in Gaul</p>
           </header>
           <p class="story">
-            Через Піренеї — і ми у Франції. Нарбонн зустрічає каналом де ла Робін,
-            запахом круасанів у критому ринку Les Halles та бруківкою Via Domitia
-            просто посеред площі. Обід тут — окремий вид мистецтва.
+            Over the Pyrenees and into France. The Canal de la Robine,
+            croissants at Les Halles, a Roman road in the middle of the square.
           </p>
+          <!-- journal: step-by-step notes go here -->
           <div class="photos">
-            <figure class="photo" data-ph="N"><img data-src="photos/narbonne-1.jpg" alt="Нарбонн — фото 1"><figcaption>канал де ла Робін</figcaption></figure>
-            <figure class="photo" data-ph="A"><img data-src="photos/narbonne-2.jpg" alt="Нарбонн — фото 2"><figcaption>Les Halles</figcaption></figure>
-            <figure class="photo" data-ph="R"><img data-src="photos/narbonne-3.jpg" alt="Нарбонн — фото 3"><figcaption>старе місто</figcaption></figure>
+            <figure class="photo" data-ph="N"><img data-src="photos/narbonne-1.jpg" alt="Narbonne — photo 1"><figcaption>Canal de la Robine</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/narbonne-2.jpg" alt="Narbonne — photo 2"><figcaption>Les Halles</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/narbonne-3.jpg" alt="Narbonne — photo 3"><figcaption>old town</figcaption></figure>
           </div>
-          <footer class="leg">далі: Каркассон · ~60 км на захід</footer>
+          <footer class="leg">next: Carcassonne · ~60 km west</footer>
         </article>
       </div>
     </section>
@@ -98,21 +98,21 @@
       <div class="pin">
         <article class="card side-left">
           <header>
-            <p class="stage-no">03 · середньовіччя</p>
-            <h2>Каркассон</h2>
-            <p class="meta">фортеця ЮНЕСКО · 52 вежі над річкою Од</p>
+            <p class="stage-no">03 · the middle ages</p>
+            <h2>Carcassonne</h2>
+            <p class="meta">UNESCO citadel · 52 towers above the Aude</p>
           </header>
           <p class="story">
-            Здалеку Сіте виглядає як декорація до казки — і зблизька теж.
-            Ми гуляємо подвійними мурами до заходу сонця, коли туристи роз'їжджаються,
-            і місто-фортеця лишається майже тільки нам.
+            From afar La Cité looks like a film set — up close, even better.
+            Double walls, and a sunset we had almost to ourselves.
           </p>
+          <!-- journal: step-by-step notes go here -->
           <div class="photos">
-            <figure class="photo" data-ph="C"><img data-src="photos/carcassonne-1.jpg" alt="Каркассон — фото 1"><figcaption>Сіте здалеку</figcaption></figure>
-            <figure class="photo" data-ph="A"><img data-src="photos/carcassonne-2.jpg" alt="Каркассон — фото 2"><figcaption>між мурами</figcaption></figure>
-            <figure class="photo" data-ph="R"><img data-src="photos/carcassonne-3.jpg" alt="Каркассон — фото 3"><figcaption>захід сонця</figcaption></figure>
+            <figure class="photo" data-ph="C"><img data-src="photos/carcassonne-1.jpg" alt="Carcassonne — photo 1"><figcaption>La Cité from afar</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/carcassonne-2.jpg" alt="Carcassonne — photo 2"><figcaption>between the walls</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/carcassonne-3.jpg" alt="Carcassonne — photo 3"><figcaption>sunset</figcaption></figure>
           </div>
-          <footer class="leg">далі: Барселона · ~300 км назад на південь</footer>
+          <footer class="leg">next: Barcelona · ~300 km back south</footer>
         </article>
       </div>
     </section>
@@ -121,21 +121,21 @@
       <div class="pin">
         <article class="card side-right">
           <header>
-            <p class="stage-no">04 · фінал</p>
-            <h2>Барселона</h2>
-            <p class="meta">Каталонія, Іспанія · велике місто наприкінці дороги</p>
+            <p class="stage-no">04 · the finale</p>
+            <h2>Barcelona</h2>
+            <p class="meta">Catalonia, Spain</p>
           </header>
           <p class="story">
-            Повертаємось через ті самі гори — але вже іншими. Барселона —
-            це Гауді і готичний квартал, вермут о шостій та море, яке тепер
-            здається знайомим. Найкраща крапка маршруту, яку можна уявити.
+            Back over the same mountains, somehow different now.
+            Gaudí, the Gothic Quarter, vermouth at six — and a sea that feels like ours.
           </p>
+          <!-- journal: step-by-step notes go here -->
           <div class="photos">
-            <figure class="photo" data-ph="B"><img data-src="photos/barcelona-1.jpg" alt="Барселона — фото 1"><figcaption>Саграда Фамілія</figcaption></figure>
-            <figure class="photo" data-ph="C"><img data-src="photos/barcelona-2.jpg" alt="Барселона — фото 2"><figcaption>готичний квартал</figcaption></figure>
-            <figure class="photo" data-ph="N"><img data-src="photos/barcelona-3.jpg" alt="Барселона — фото 3"><figcaption>Барселонета</figcaption></figure>
+            <figure class="photo" data-ph="B"><img data-src="photos/barcelona-1.jpg" alt="Barcelona — photo 1"><figcaption>Sagrada Família</figcaption></figure>
+            <figure class="photo" data-ph="C"><img data-src="photos/barcelona-2.jpg" alt="Barcelona — photo 2"><figcaption>Gothic Quarter</figcaption></figure>
+            <figure class="photo" data-ph="N"><img data-src="photos/barcelona-3.jpg" alt="Barcelona — photo 3"><figcaption>Barceloneta</figcaption></figure>
           </div>
-          <footer class="leg">кінець маршруту · ~650 км разом</footer>
+          <footer class="leg">end of the route · ~650 km together</footer>
         </article>
       </div>
     </section>
@@ -143,10 +143,10 @@
     <section class="panel" id="s-finale" data-stage="finale">
       <div class="pin">
         <div class="hero-content finale-content">
-          <p class="kicker">титри</p>
-          <h1 class="small">~650 км.<br>Дві країни.<br>Одна історія.</h1>
-          <p class="route-line">Ла Пінеда · Нарбонн · Каркассон · Барселона</p>
-          <p class="credits">знято вдвох · режисери — ми самі</p>
+          <p class="kicker">credits</p>
+          <h1 class="small">~650 km.<br>Two countries.<br>One story.</h1>
+          <p class="route-line">La Pineda · Narbonne · Carcassonne · Barcelona</p>
+          <p class="credits">shot &amp; directed by the two of us</p>
         </div>
       </div>
     </section>
