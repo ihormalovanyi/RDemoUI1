@@ -14,14 +14,14 @@
      route — скільки відрізків промальовано на момент прибуття. */
   const SHOTS = {
     hero:        { x: 545, y: 660,  z: 1.0,  route: 0 },
+    arrival:     { x: 660, y: 800,  z: 1.5,  route: 0 },
     pineda:      { x: 180, y: 990,  z: 2.35, route: 0 },
     narbonne:    { x: 890, y: 320,  z: 2.35, route: 1 },
     carcassonne: { x: 620, y: 300,  z: 2.55, route: 2 },
     barcelona:   { x: 680, y: 890,  z: 2.35, route: 3 },
-    finale:      { x: 545, y: 660,  z: 1.12, route: 3 },
+    finale:      { x: 600, y: 640,  z: 1.05, route: 3 },
   };
-  const ORDER = ['hero', 'pineda', 'narbonne', 'carcassonne', 'barcelona', 'finale'];
-  const STAGE_KEYS = ['pineda', 'narbonne', 'carcassonne', 'barcelona'];
+  const ORDER = ['hero', 'arrival', 'pineda', 'narbonne', 'carcassonne', 'barcelona', 'finale'];
 
   const sections = ORDER.map(k => document.querySelector(`[data-stage="${k}"]`));
   const cards = ORDER.map(k => document.querySelector(`[data-stage="${k}"] .card, [data-stage="${k}"] .hero-content`));
@@ -108,6 +108,38 @@
     map.marker.setAttribute('opacity', r > 0.01 && r < 2.99 ? 1 : 0);
   }
 
+  /* ---------- додаткові шари: перельоти, таксі, вилазки ---------- */
+
+  function placePlane(plane, path, ft, visible) {
+    if (!visible) { plane.setAttribute('opacity', 0); return; }
+    const len = path.getTotalLength();
+    const p = path.getPointAtLength(len * ft);
+    const p2 = path.getPointAtLength(Math.min(len, len * ft + 2));
+    const ang = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI + 90;
+    plane.setAttribute('opacity', 1);
+    plane.setAttribute('transform',
+      `translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+  }
+
+  function driveExtras(key, t) {
+    const E = map.extras;
+    if (key === 'arrival') {
+      E.flightIn.setAttribute('opacity', clamp(t * 4, 0, 1));
+      E.taxi.setAttribute('opacity', clamp((t - 0.5) / 0.3, 0, 1));
+      const ft = clamp(t / 0.55, 0, 1);
+      placePlane(E.planeIn, E.flightInPath, ft, t > 0.01 && ft < 1);
+    } else if (key === 'pineda') {
+      E.trips.setAttribute('opacity', clamp((t - 0.25) * 3, 0, 1) * 0.9);
+    } else if (key === 'barcelona') {
+      E.metro.setAttribute('opacity', clamp((t - 0.3) * 3, 0, 1) * 0.9);
+    } else if (key === 'finale') {
+      E.depart.setAttribute('opacity', clamp(t * 3, 0, 1) * 0.9);
+      E.flightOut.setAttribute('opacity', clamp((t - 0.15) * 4, 0, 1));
+      const ft = clamp((t - 0.22) / 0.6, 0, 1);
+      placePlane(E.planeOut, E.flightOutPath, ft, t > 0.22 && ft < 1);
+    }
+  }
+
   /* ---------- картки та інтерфейс ---------- */
 
   function applyCards(scrollY) {
@@ -117,6 +149,7 @@
       const s = sections[i];
       const span = s.offsetHeight - vh;
       const t = clamp((scrollY - s.offsetTop) / Math.max(span, 1), -0.2, 1.2);
+      driveExtras(key, clamp(t, 0, 1));
       /* плавно з'являється на вході в сцену, зникає на виході */
       let o;
       if (i === 0) o = 1 - clamp(t * 2.4, 0, 1);                       /* герой тане */
