@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Дорога на двох · Ла Пінеда — Барселона</title>
+  <meta name="description" content="Кінематографічна мапа нашої подорожі: Ла Пінеда → Нарбонн → Каркассон → Барселона">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+</head>
+<body>
+
+  <!-- Кіно-мапа: фіксована сцена позаду контенту -->
+  <div id="map-stage" aria-hidden="true">
+    <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="letterbox top" aria-hidden="true"></div>
+  <div class="letterbox bottom" aria-hidden="true"></div>
+
+  <!-- Навігація за етапами -->
+  <nav id="waypoints" aria-label="Етапи маршруту">
+    <button data-goto="hero"        title="Початок"><i></i><span>Початок</span></button>
+    <button data-goto="pineda"      title="Ла Пінеда"><i></i><span>Ла Пінеда</span></button>
+    <button data-goto="narbonne"    title="Нарбонн"><i></i><span>Нарбонн</span></button>
+    <button data-goto="carcassonne" title="Каркассон"><i></i><span>Каркассон</span></button>
+    <button data-goto="barcelona"   title="Барселона"><i></i><span>Барселона</span></button>
+    <button data-goto="finale"      title="Фінал"><i></i><span>Фінал</span></button>
+  </nav>
+
+  <main id="scroll">
+
+    <section class="panel" id="s-hero" data-stage="hero">
+      <div class="pin">
+        <div class="hero-content">
+          <p class="kicker">роуд-муві на двох · літо 2026</p>
+          <h1>Дорога<br>на&nbsp;двох</h1>
+          <p class="route-line">
+            Ла Пінеда <span>→</span> Нарбонн <span>→</span> Каркассон <span>→</span> Барселона
+          </p>
+          <p class="scroll-hint">гортай, щоб вирушити<br><span class="arrow">↓</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="s-pineda" data-stage="pineda">
+      <div class="pin">
+        <article class="card side-left">
+          <header>
+            <p class="stage-no">01 · старт</p>
+            <h2>Ла Пінеда</h2>
+            <p class="meta">Коста-Дорада, Іспанія · точка відліку</p>
+          </header>
+          <p class="story">
+            Тут усе починається: золотий пісок, тепле й мілке море та довга
+            набережна між Салоу і Таррагоною. Кілька днів тиші перед дорогою —
+            сніданки з видом на Середземне море і план маршруту на серветці.
+          </p>
+          <div class="photos">
+            <figure class="photo" data-ph="П"><img data-src="photos/pineda-1.jpg" alt="Ла Пінеда — фото 1"><figcaption>пляж уранці</figcaption></figure>
+            <figure class="photo" data-ph="І"><img data-src="photos/pineda-2.jpg" alt="Ла Пінеда — фото 2"><figcaption>набережна</figcaption></figure>
+            <figure class="photo" data-ph="Н"><img data-src="photos/pineda-3.jpg" alt="Ла Пінеда — фото 3"><figcaption>ми вдвох</figcaption></figure>
+          </div>
+          <footer class="leg">далі: Нарбонн · ~290 км узбережжям на північ</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-narbonne" data-stage="narbonne">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">02 · перетин кордону</p>
+            <h2>Нарбонн</h2>
+            <p class="meta">Окситанія, Франція · перше римське місто Галлії</p>
+          </header>
+          <p class="story">
+            Через Піренеї — і ми у Франції. Нарбонн зустрічає каналом де ла Робін,
+            запахом круасанів у критому ринку Les Halles та бруківкою Via Domitia
+            просто посеред площі. Обід тут — окремий вид мистецтва.
+          </p>
+          <div class="photos">
+            <figure class="photo" data-ph="N"><img data-src="photos/narbonne-1.jpg" alt="Нарбонн — фото 1"><figcaption>канал де ла Робін</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/narbonne-2.jpg" alt="Нарбонн — фото 2"><figcaption>Les Halles</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/narbonne-3.jpg" alt="Нарбонн — фото 3"><figcaption>старе місто</figcaption></figure>
+          </div>
+          <footer class="leg">далі: Каркассон · ~60 км на захід</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-carcassonne" data-stage="carcassonne">
+      <div class="pin">
+        <article class="card side-left">
+          <header>
+            <p class="stage-no">03 · середньовіччя</p>
+            <h2>Каркассон</h2>
+            <p class="meta">фортеця ЮНЕСКО · 52 вежі над річкою Од</p>
+          </header>
+          <p class="story">
+            Здалеку Сіте виглядає як декорація до казки — і зблизька теж.
+            Ми гуляємо подвійними мурами до заходу сонця, коли туристи роз'їжджаються,
+            і місто-фортеця лишається майже тільки нам.
+          </p>
+          <div class="photos">
+            <figure class="photo" data-ph="C"><img data-src="photos/carcassonne-1.jpg" alt="Каркассон — фото 1"><figcaption>Сіте здалеку</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/carcassonne-2.jpg" alt="Каркассон — фото 2"><figcaption>між мурами</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/carcassonne-3.jpg" alt="Каркассон — фото 3"><figcaption>захід сонця</figcaption></figure>
+          </div>
+          <footer class="leg">далі: Барселона · ~300 км назад на південь</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-barcelona" data-stage="barcelona">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">04 · фінал</p>
+            <h2>Барселона</h2>
+            <p class="meta">Каталонія, Іспанія · велике місто наприкінці дороги</p>
+          </header>
+          <p class="story">
+            Повертаємось через ті самі гори — але вже іншими. Барселона —
+            це Гауді і готичний квартал, вермут о шостій та море, яке тепер
+            здається знайомим. Найкраща крапка маршруту, яку можна уявити.
+          </p>
+          <div class="photos">
+            <figure class="photo" data-ph="B"><img data-src="photos/barcelona-1.jpg" alt="Барселона — фото 1"><figcaption>Саграда Фамілія</figcaption></figure>
+            <figure class="photo" data-ph="C"><img data-src="photos/barcelona-2.jpg" alt="Барселона — фото 2"><figcaption>готичний квартал</figcaption></figure>
+            <figure class="photo" data-ph="N"><img data-src="photos/barcelona-3.jpg" alt="Барселона — фото 3"><figcaption>Барселонета</figcaption></figure>
+          </div>
+          <footer class="leg">кінець маршруту · ~650 км разом</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-finale" data-stage="finale">
+      <div class="pin">
+        <div class="hero-content finale-content">
+          <p class="kicker">титри</p>
+          <h1 class="small">~650 км.<br>Дві країни.<br>Одна історія.</h1>
+          <p class="route-line">Ла Пінеда · Нарбонн · Каркассон · Барселона</p>
+          <p class="credits">знято вдвох · режисери — ми самі</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/map.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
