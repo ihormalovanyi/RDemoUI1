@@ -231,13 +231,13 @@ const MAP = (() => {
     /* перельоти (з'являються у пролозі та фіналі) */
     const flightInG = el('g', { opacity: 0 }, svg);
     const flightInPath = el('path', {
-      d: FLIGHT_IN, fill: 'none', stroke: 'rgba(170,200,230,0.75)',
-      'stroke-width': 2, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+      d: FLIGHT_IN, fill: 'none', stroke: 'rgba(86,156,255,0.95)',
+      'stroke-width': 2.6, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round', filter: 'url(#f-glow)',
     }, flightInG);
     const flightOutG = el('g', { opacity: 0 }, svg);
     const flightOutPath = el('path', {
-      d: FLIGHT_OUT, fill: 'none', stroke: 'rgba(170,200,230,0.75)',
-      'stroke-width': 2, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round',
+      d: FLIGHT_OUT, fill: 'none', stroke: 'rgba(86,156,255,0.95)',
+      'stroke-width': 2.6, 'stroke-dasharray': '12 8', 'stroke-linecap': 'round', filter: 'url(#f-glow)',
     }, flightOutG);
 
     /* нічне таксі Ель-Прат → Ла Пінеда */
@@ -261,7 +261,7 @@ const MAP = (() => {
 
     /* аеропорт Ель-Прат */
     const apG = el('g', {}, svg);
-    el('circle', { cx: AIRPORT.x, cy: AIRPORT.y, r: 3.4, fill: 'none', stroke: 'rgba(170,200,230,0.8)', 'stroke-width': 1.6 }, apG);
+    el('circle', { cx: AIRPORT.x, cy: AIRPORT.y, r: 3.4, fill: 'none', stroke: 'rgba(86,156,255,0.95)', 'stroke-width': 1.6 }, apG);
 
     /* маршрут, який промальовується */
     const routeG = el('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
@@ -326,11 +326,23 @@ const MAP = (() => {
     el('circle', { r: 5, fill: '#f4d9ac', filter: 'url(#f-glow)' }, marker);
 
     /* літачки, що летять дугами перельотів */
-    const planeShape = 'M0,-9 L2.2,-2 L9,1.5 L2.5,3 L1.5,8 L0,6.5 L-1.5,8 L-2.5,3 L-9,1.5 L-2.2,-2 Z';
-    const planeIn = el('g', { opacity: 0 }, svg);
-    el('path', { d: planeShape, fill: '#cfe0f0', filter: 'url(#f-glow)' }, planeIn);
-    const planeOut = el('g', { opacity: 0 }, svg);
-    el('path', { d: planeShape, fill: '#cfe0f0', filter: 'url(#f-glow)' }, planeOut);
+    const planeShape =
+      'M0,-15 C1.6,-11 2.2,-8 2.2,-4.5 L2.2,-3 L14,4 L14,7.4 L2.4,4.6 ' +
+      'L1.8,10 L6.4,13.4 L6.4,15.6 L0,14 L-6.4,15.6 L-6.4,13.4 L-1.8,10 ' +
+      'L-2.4,4.6 L-14,7.4 L-14,4 L-2.2,-3 L-2.2,-4.5 C-2.2,-8 -1.6,-11 0,-15 Z';
+    const mkPlane = () => {
+      const g = el('g', { opacity: 0 }, svg);
+      /* м'який синій ореол під корпусом */
+      el('circle', { r: 17, fill: 'rgba(86,156,255,0.28)', filter: 'url(#f-glow)' }, g);
+      el('path', {
+        d: planeShape, fill: '#f2f8ff',
+        stroke: 'rgba(86,156,255,0.9)', 'stroke-width': 1.2,
+        filter: 'url(#f-glow)',
+      }, g);
+      return g;
+    };
+    const planeIn = mkPlane();
+    const planeOut = mkPlane();
 
     /* довжини відрізків — після вставки в DOM */
     legs.forEach(l => {
