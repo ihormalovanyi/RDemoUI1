@@ -14,14 +14,17 @@
      route — скільки відрізків промальовано на момент прибуття. */
   const SHOTS = {
     hero:        { x: 545, y: 660,  z: 1.0,  route: 0 },
-    arrival:     { x: 660, y: 800,  z: 1.5,  route: 0 },
     pineda:      { x: 180, y: 990,  z: 2.35, route: 0 },
     narbonne:    { x: 890, y: 320,  z: 2.35, route: 1 },
     carcassonne: { x: 620, y: 300,  z: 2.55, route: 2 },
     barcelona:   { x: 680, y: 890,  z: 2.35, route: 3 },
-    finale:      { x: 600, y: 640,  z: 1.05, route: 3 },
+    /* z фіналу перераховується в measure(): має вміщати і Братиславу */
+    finale:      { x: 2450, y: -280, z: 0.44, route: 3 },
   };
   const ORDER = ['hero', 'arrival', 'pineda', 'narbonne', 'carcassonne', 'barcelona', 'finale'];
+
+  /* частка секції прольоту, за яку літак долає дугу (синхронно з driveExtras) */
+  const FLIGHT_SPAN = 0.55;
 
   const sections = ORDER.map(k => document.querySelector(`[data-stage="${k}"]`));
   const cards = ORDER.map(k => document.querySelector(`[data-stage="${k}"] .card, [data-stage="${k}"] .hero-content`));
@@ -31,21 +34,71 @@
 
   /* ---------- геометрія скролу ---------- */
 
-  let keyframes = []; /* { y, shot } — позиція скролу, на якій кадр "у фокусі" */
+  let keyframes = []; /* { y, shot } — кейфрейми камери */
+  let navKF = [];     /* { y } — якорі навігації, по одному на секцію */
   let vw = innerWidth, vh = innerHeight, fitW = 1000;
+  let arrTop = 0, arrSpan = 1; /* вікно секції прольоту */
 
   function measure() {
     vw = innerWidth; vh = innerHeight;
     const aspect = vh / vw;
     /* ширина світу, за якої вся мапа вміщується у в'юпорт при z=1 */
     fitW = Math.max(MAP.WORLD.w, MAP.WORLD.h / aspect) * 1.06;
-    keyframes = ORDER.map((k, i) => {
+
+    /* фінал: віддалити так, щоб було видно і Братиславу, і весь маршрут */
+    SHOTS.finale.z = fitW / Math.max(5400, 3300 / aspect);
+
+    const arr = sections[1];
+    arrTop = arr.offsetTop;
+    arrSpan = Math.max(arr.offsetHeight - vh, 1);
+
+    navKF = ORDER.map((k, i) => {
       const s = sections[i];
-      const top = s.offsetTop, h = s.offsetHeight;
-      /* героям — початок сцени, етапам — середина їхньої "липкої" зони */
-      const y = i === 0 ? 0 : top + (h - vh) * 0.55;
-      return { y, shot: SHOTS[k], key: k };
+      const y = i === 0 ? 0 : s.offsetTop + (s.offsetHeight - vh) * 0.55;
+      return { y };
     });
+
+    keyframes = [];
+    ORDER.forEach((k, i) => {
+      const s = sections[i];
+      if (k === 'arrival') {
+        /* межі вікна прольоту — всередині камера веде літак сама */
+        keyframes.push({ y: arrTop, shot: arrivalShot(0) });
+        keyframes.push({ y: arrTop + arrSpan, shot: arrivalShot(1) });
+      } else {
+        const y = i === 0 ? 0 : s.offsetTop + (s.offsetHeight - vh) * 0.55;
+        keyframes.push({ y, shot: SHOTS[k] });
+      }
+    });
+  }
+
+  /* ---------- кадр «слідуй за літаком» ---------- */
+
+  function arrivalShot(t) {
+    const path = map.extras.flightInPath;
+    let len = pathLenCache.get(path);
+    if (!len) { len = path.getTotalLength(); pathLenCache.set(path, len); }
+    const ft = clamp(t / FLIGHT_SPAN, 0, 1);
+    const p = path.getPointAtLength(len * ft);
+
+    /* зум: близько над Братиславою → віддалитись і летіти → зайти на посадку */
+    let z;
+    if (ft < 0.3)       z = lerp(1.7, 0.55, easeInOut(ft / 0.3));
+    else if (ft < 0.85) z = 0.55;
+    else                z = lerp(0.55, 1.1, easeInOut((ft - 0.85) / 0.15));
+
+    let shot = { x: p.x, y: p.y, z, route: 0 };
+    /* після посадки — плавний перехід до регіону Ель-Прат / узбережжя */
+    if (t > 0.58) {
+      const bt = easeInOut(clamp((t - 0.58) / 0.34, 0, 1));
+      shot = {
+        x: lerp(shot.x, 660, bt),
+        y: lerp(shot.y, 800, bt),
+        z: lerp(shot.z, 1.5, bt),
+        route: 0,
+      };
+    }
+    return shot;
   }
 
   /* ---------- інтерполяція ---------- */
@@ -57,6 +110,10 @@
   const easeInCubic = t => t * t * t;
 
   function shotAt(scrollY) {
+    /* усередині секції прольоту камера слідує за літаком */
+    if (scrollY > arrTop && scrollY < arrTop + arrSpan)
+      return arrivalShot((scrollY - arrTop) / arrSpan);
+
     const kf = keyframes;
     if (scrollY <= kf[0].y) return { ...kf[0].shot };
     if (scrollY >= kf[kf.length - 1].y) return { ...kf[kf.length - 1].shot };
@@ -91,7 +148,21 @@
     /* далекі підписи видно здалеку, ближні — при наближенні */
     map.farLabels.setAttribute('opacity', clamp((1.9 - cam.z) / 0.6, 0, 1).toFixed(2));
     map.nearLabels.setAttribute('opacity', clamp((cam.z - 1.35) / 0.6, 0, 1).toFixed(2));
+
+    /* на далеких планах підписи й точки зупинок тримають екранний розмір */
+    const s = Math.round((1 / Math.min(cam.z, 1)) * 20) / 20;
+    if (s !== lastStopScale) {
+      lastStopScale = s;
+      map.stopParts.forEach(p => {
+        p.label.setAttribute('font-size', (19 * s).toFixed(1));
+        p.ring.setAttribute('r', (6.5 * s).toFixed(1));
+        p.ring.setAttribute('stroke-width', (2.4 * s).toFixed(1));
+        p.core.setAttribute('r', (2.4 * s).toFixed(1));
+        p.pulse.setAttribute('r', (9 * s).toFixed(1));
+      });
+    }
   }
+  let lastStopScale = 1;
 
   function applyRoute(r) {
     map.legs.forEach((leg, i) => {
@@ -163,8 +234,11 @@
         card.style.opacity = o.toFixed(3);
         card.style.visibility = o < 0.02 ? 'hidden' : 'visible';
       } else {
-        /* картки-«шторки»: вилітають знизу і ховаються вниз */
-        const enter = easeOutCubic(clamp(t * 3, 0, 1));
+        /* картки-«шторки»: вилітають знизу і ховаються вниз;
+           у прольоті — тільки після посадки літака */
+        const enter = key === 'arrival'
+          ? easeOutCubic(clamp((t - 0.56) * 5, 0, 1))
+          : easeOutCubic(clamp(t * 3, 0, 1));
         const exit = easeInCubic(clamp((t - 0.78) * 5, 0, 1));
         const off = 1 - enter + exit;
         card.style.transform = `translateY(${(off * 112).toFixed(2)}vh)`;
@@ -175,7 +249,7 @@
 
     /* активна точка навігації */
     let active = 0;
-    keyframes.forEach((kf, i) => { if (scrollY > kf.y - vh * 0.5) active = i; });
+    navKF.forEach((kf, i) => { if (scrollY > kf.y - vh * 0.5) active = i; });
     navBtns.forEach((b, i) => b.classList.toggle('active', i === active));
 
     /* пульс активної зупинки */
@@ -186,7 +260,7 @@
 
     /* letterbox: широкий у героя та в титрах, тонкий у дорозі */
     const heroT = clamp(scrollY / (vh * 1.2), 0, 1);
-    const endKf = keyframes[keyframes.length - 1];
+    const endKf = navKF[navKF.length - 1];
     const endT = clamp((scrollY - endKf.y + vh) / vh, 0, 1);
     const lb = Math.max(lerp(7, 2.2, heroT), lerp(2.2, 7, endT));
     lbTop.style.setProperty('--lb', lb + 'vh');
@@ -243,7 +317,7 @@
   /* навігація точками */
   navBtns.forEach((btn, i) => {
     btn.addEventListener('click', () => {
-      const y = i === 0 ? 0 : keyframes[i].y;
+      const y = i === 0 ? 0 : navKF[i].y;
       scrollTo({ top: y, behavior: reduceMotion ? 'auto' : 'smooth' });
     });
   });
