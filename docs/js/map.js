@@ -9,7 +9,8 @@ const MAP = (() => {
   const NS = 'http://www.w3.org/2000/svg';
   const WORLD = { w: 1000, h: 1300 };
 
-  /* Узбережжя з півдня (дельта Ебро) на північ (Сет) */
+  /* Узбережжя з півдня (дельта Ебро) через Прованс до Італії —
+     далека частина видна лише на «польотних» планах */
   const COAST = [
     [40, 1290], [98, 1254], [199, 1189], [225, 1120], [235, 1083],
     [291, 1060], [300, 1049], [319, 1041], [350, 1030], [442, 1003],
@@ -19,7 +20,19 @@ const MAP = (() => {
     [888, 581], [846, 574], [843, 536], [809, 494], [809, 437],
     [809, 403], [812, 357], [815, 315], [829, 285], [846, 262],
     [941, 217], [994, 171], [1078, 133], [1140, 96],
+    [1246, 171], [1462, 209], [1618, 304], [1828, 228], [1994, 72],
+    [2338, -171], [2458, -209], [2716, -76], [2842, 133], [2926, 361],
+    [3234, 665], [3374, 817], [3878, 1159], [4158, 1387],
   ];
+
+  /* Адріатика та острови — стилізовані плями для далеких планів */
+  const ADRIATIC = [
+    [3808, -684], [3402, -589], [3396, -209], [3738, 95], [3934, 513],
+    [4326, 749], [4900, 1240], [5400, 1520], [5620, 1120], [5100, 600],
+    [4780, 300], [4550, 133], [4214, -95], [3990, -551],
+  ];
+  const CORSICA  = [[2422, 323], [2540, 400], [2530, 700], [2430, 720], [2390, 500]];
+  const SARDINIA = [[2250, 1010], [2430, 1030], [2460, 1290], [2280, 1310], [2230, 1120]];
 
   /* Маршрут: три головні відрізки (туди, на захід, назад) */
   const LEG1 = [ // Ла Пінеда → автобуси до Camp de Tarragona → TGV до Нарбонна
@@ -38,6 +51,7 @@ const MAP = (() => {
   ];
 
   const STOPS = {
+    arrival:     { x: 4746, y: -1630, name: 'Bratislava', anchor: 'end', dx: -18, dy: 30 },
     pineda:      { x: 295, y: 1045, name: 'La Pineda',   anchor: 'end',   dx: -16, dy: 6 },
     narbonne:    { x: 799, y: 253,  name: 'Narbonne',    anchor: 'start', dx: 16,  dy: -12 },
     carcassonne: { x: 616, y: 242,  name: 'Carcassonne', anchor: 'middle', dx: 0,  dy: -22 },
@@ -55,8 +69,8 @@ const MAP = (() => {
 
   /* Додаткові шляхи: переліт, таксі, одноденні вилазки, метро */
   const AIRPORT = { x: 540, y: 969 }; // Ель-Прат
-  const FLIGHT_IN  = 'M1150,-120 C 980,180 720,520 540,969';
-  const FLIGHT_OUT = 'M540,969 C 760,560 1020,180 1230,-120';
+  const FLIGHT_IN  = 'M4746,-1630 C 3300,-950 1500,150 540,969';
+  const FLIGHT_OUT = 'M540,969 C 1800,350 3500,-650 4746,-1630';
   const TAXI = [
     [540, 969], [510, 985], [468, 996], [430, 1006], [386, 1006],
     [350, 1026], [319, 1037], [295, 1045],
@@ -80,6 +94,8 @@ const MAP = (() => {
     [[540, 330], [616, 250], [700, 236], [780, 226], [862, 236]],            // Од
     [[-60, 1070], [80, 1110], [140, 1150], [199, 1189]],                     // Ебро
     [[452, 828], [505, 890], [530, 930], [546, 962]],                        // Льобрегат
+    [[3600, -1850], [4100, -1720], [4542, -1653], [4746, -1630],
+     [4830, -1510], [4980, -1440], [5250, -1390], [5500, -1430]],            // Дунай
   ];
 
   /* ---------- утиліти ---------- */
@@ -136,14 +152,14 @@ const MAP = (() => {
     el('feMergeNode', { in: 'SourceGraphic' }, m);
 
     /* море */
-    el('rect', { x: -800, y: -800, width: 2800, height: 3000, fill: 'url(#g-sea)' }, svg);
+    el('rect', { x: -3000, y: -9500, width: 12500, height: 19500, fill: 'url(#g-sea)' }, svg);
 
     /* координатна сітка (граткула) */
     const grid = el('g', { stroke: 'rgba(160,190,220,0.055)', 'stroke-width': 1 }, svg);
-    for (let gx = -700; gx <= 1900; gx += 140)
-      el('line', { x1: gx, y1: -800, x2: gx, y2: 2200 }, grid);
-    for (let gy = -700; gy <= 2100; gy += 140)
-      el('line', { x1: -800, y1: gy, x2: 2000, y2: gy }, grid);
+    for (let gx = -2940; gx <= 7600; gx += 140)
+      el('line', { x1: gx, y1: -9000, x2: gx, y2: 4000 }, grid);
+    for (let gy = -8960; gy <= 3920; gy += 140)
+      el('line', { x1: -3000, y1: gy, x2: 7700, y2: gy }, grid);
 
     /* хвилі в морі */
     const waves = el('g', {
@@ -153,18 +169,28 @@ const MAP = (() => {
     const WAVES = [
       [520, 1160], [660, 1060], [780, 900], [880, 760], [930, 470],
       [960, 330], [640, 1210], [900, 620], [990, 900], [430, 1240],
+      [1750, 520], [2150, 450], [2900, 900], [3400, 1100], [1350, 700],
     ];
     WAVES.forEach(([wx, wy], i) => {
       const l = 26 + jitter(i) * 22;
       el('path', { d: `M${wx},${wy} q${l / 4},-7 ${l / 2},0 q${l / 4},7 ${l / 2},0` }, waves);
     });
 
-    /* суходіл: узбережжя + рамка на північний захід */
+    /* суходіл: узбережжя + рамка, що охоплює Європу до Братислави */
     const coastRev = [...COAST].reverse();
     const landPath =
-      smooth(coastRev)                       /* від Сета вниз до дельти Ебро */
-      + ' L -300 1420 L -300 -300 L 1300 -300 Z'; /* захід/північ — суцільний суходіл */
-    el('path', { d: landPath, fill: 'url(#g-land)', stroke: 'rgba(224,214,190,0.35)', 'stroke-width': 2 }, svg);
+      smooth(coastRev)                       /* від Італії через Прованс до дельти Ебро */
+      + ' L -3000 1500 L -3000 -9000 L 7600 -9000 L 7600 1550 Z';
+    el('path', { d: landPath, fill: 'url(#g-land)' }, svg);
+    /* чітка берегова лінія — окремо, щоб рамка полігона не світилася */
+    el('path', { d: smooth(coastRev), fill: 'none', stroke: 'rgba(224,214,190,0.35)', 'stroke-width': 2 }, svg);
+
+    /* Адріатика — морська «кишеня» поверх суходолу */
+    el('path', { d: smooth([...ADRIATIC, ADRIATIC[0]]), fill: '#101c2e', stroke: 'rgba(224,214,190,0.25)', 'stroke-width': 2 }, svg);
+
+    /* Корсика й Сардинія */
+    [CORSICA, SARDINIA].forEach(isl =>
+      el('path', { d: smooth([...isl, isl[0]]), fill: 'url(#g-land)', stroke: 'rgba(224,214,190,0.3)', 'stroke-width': 1.6 }, svg));
 
     /* мілководдя — світла смуга вздовж берега */
     el('path', {
@@ -193,6 +219,9 @@ const MAP = (() => {
     ridge(60, 555, 700, 590, 9, 0.85);    /* передгір'я */
     ridge(470, 130, 640, 165, 6, 0.9);    /* Чорна гора */
     ridge(120, 830, 330, 900, 6, 0.8);    /* гори за Таррагоною */
+    ridge(2000, -120, 3200, -850, 11, 1.5); /* Альпи */
+    ridge(3200, -850, 4450, -1300, 9, 1.3); /* східні Альпи */
+    ridge(2620, -60, 3700, 760, 9, 0.9);    /* Апенніни */
 
     /* кордон */
     el('path', {
@@ -213,6 +242,18 @@ const MAP = (() => {
     };
     country(210, 760, 'SPAIN', -6);
     country(310, 105, 'FRANCE', 2);
+    country(3080, 380, 'ITALY', 40);
+    country(3650, -1180, 'AUSTRIA', -8);
+    country(4900, -1770, 'SLOVAKIA', -3);
+
+    /* Відень — далекий орієнтир поруч із Братиславою */
+    el('circle', { cx: 4542, cy: -1653, r: 4.5, fill: 'rgba(224,214,190,0.45)' }, far);
+    const wienT = el('text', {
+      x: 4520, y: -1685, fill: 'rgba(224,214,190,0.5)', 'font-size': 26,
+      'letter-spacing': 4, 'text-anchor': 'end',
+      'font-family': "'Manrope', system-ui, sans-serif",
+    }, far);
+    wienT.textContent = 'Vienna';
     const seaT = el('text', {
       x: 720, y: 1005, fill: 'rgba(140,180,215,0.4)', 'font-size': 30,
       'letter-spacing': 9, 'font-style': 'italic',
@@ -301,11 +342,12 @@ const MAP = (() => {
     /* зупинки маршруту */
     const stopsG = el('g', { id: 'stops' }, svg);
     const stopNodes = {};
+    const stopParts = [];
     Object.entries(STOPS).forEach(([key, s]) => {
       const g = el('g', { class: 'stop', 'data-stop': key }, stopsG);
-      el('circle', { class: 'pulse', cx: s.x, cy: s.y, r: 9, fill: 'none', stroke: 'rgba(224,164,88,0.7)', 'stroke-width': 1.6, opacity: 0 }, g);
-      el('circle', { cx: s.x, cy: s.y, r: 6.5, fill: '#0d1420', stroke: '#e0a458', 'stroke-width': 2.4 }, g);
-      el('circle', { class: 'core', cx: s.x, cy: s.y, r: 2.4, fill: '#e0a458' }, g);
+      const pulse = el('circle', { class: 'pulse', cx: s.x, cy: s.y, r: 9, fill: 'none', stroke: 'rgba(224,164,88,0.7)', 'stroke-width': 1.6, opacity: 0 }, g);
+      const ring = el('circle', { cx: s.x, cy: s.y, r: 6.5, fill: '#0d1420', stroke: '#e0a458', 'stroke-width': 2.4 }, g);
+      const core = el('circle', { class: 'core', cx: s.x, cy: s.y, r: 2.4, fill: '#e0a458' }, g);
       const label = el('text', {
         x: s.x + s.dx, y: s.y + s.dy,
         fill: '#e8e2d4', 'font-size': 19, 'font-weight': 600, 'letter-spacing': 2.4,
@@ -315,6 +357,7 @@ const MAP = (() => {
       }, g);
       label.textContent = s.name.toUpperCase();
       stopNodes[key] = g;
+      stopParts.push({ pulse, ring, core, label });
     });
 
     /* компас */
@@ -363,7 +406,7 @@ const MAP = (() => {
     });
 
     return {
-      legs, stops: STOPS, stopNodes, marker,
+      legs, stops: STOPS, stopNodes, stopParts, marker,
       farLabels: far, nearLabels: near, world: WORLD,
       extras: {
         flightIn: flightInG, flightInPath, planeIn,
