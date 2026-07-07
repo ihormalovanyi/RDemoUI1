@@ -13,7 +13,8 @@
      x, y — центр кадру у світі мапи; z — наближення.
      route — скільки відрізків промальовано на момент прибуття. */
   const SHOTS = {
-    hero:        { x: 545, y: 660,  z: 1.0,  route: 0 },
+    /* титул — над Братиславою, звідки все починається */
+    hero:        { x: 5080, y: -1890, z: 1.35, route: 0 },
     pineda:      { x: 180, y: 990,  z: 2.35, route: 0 },
     narbonne:    { x: 890, y: 320,  z: 2.35, route: 1 },
     carcassonne: { x: 620, y: 300,  z: 2.55, route: 2 },
@@ -201,7 +202,11 @@
     const E = map.extras;
     if (key === 'arrival') {
       E.flightIn.setAttribute('opacity', clamp(t * 4, 0, 1));
-      E.taxi.setAttribute('opacity', clamp((t - 0.5) / 0.3, 0, 1));
+      /* таксі промальовується від Ель-Прата після посадки */
+      E.taxi.setAttribute('opacity', t > 0.52 ? 1 : 0);
+      const tf = easeInOut(clamp((t - 0.54) / 0.3, 0, 1));
+      const off = E.taxiLen * (1 - tf);
+      E.taxiPaths.forEach(p => p.setAttribute('stroke-dashoffset', off));
       const ft = clamp(t / 0.55, 0, 1);
       placePlane(E.planeIn, E.flightInPath, ft, t > 0.01 && ft < 1);
     } else if (key === 'pineda') {

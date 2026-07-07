@@ -286,12 +286,13 @@ const MAP = (() => {
     const flightOutG = el('g', { opacity: 0 }, svg);
     const flightOutPath = flightLine(FLIGHT_OUT, flightOutG);
 
-    /* нічне таксі Ель-Прат → Ла Пінеда */
+    /* нічне таксі Ель-Прат → Ла Пінеда: промальовується після посадки */
     const taxiG = el('g', { opacity: 0 }, svg);
-    el('path', {
-      d: smooth(TAXI), fill: 'none', stroke: '#e0a458',
-      'stroke-width': 2.6, 'stroke-dasharray': '1 7', 'stroke-linecap': 'round',
-    }, taxiG);
+    const taxiPaths = [
+      el('path', { d: smooth(TAXI), fill: 'none', stroke: '#e8b76a', opacity: 0.25, 'stroke-width': 8, 'stroke-linecap': 'round' }, taxiG),
+      el('path', { d: smooth(TAXI), fill: 'none', stroke: 'rgba(4,7,12,0.55)', 'stroke-width': 6, 'stroke-linecap': 'round' }, taxiG),
+      el('path', { d: smooth(TAXI), fill: 'none', stroke: '#e8b76a', 'stroke-width': 3, 'stroke-linecap': 'round' }, taxiG),
+    ];
 
     /* одноденні вилазки з Ла Пінеди та метро Барселона ↔ Бадалона */
     const dotted = pts => el('path', {
@@ -404,6 +405,11 @@ const MAP = (() => {
         p.setAttribute('stroke-dashoffset', l.len);
       });
     });
+    const taxiLen = taxiPaths[0].getTotalLength();
+    taxiPaths.forEach(p => {
+      p.setAttribute('stroke-dasharray', taxiLen);
+      p.setAttribute('stroke-dashoffset', taxiLen);
+    });
 
     return {
       legs, stops: STOPS, stopNodes, stopParts, marker,
@@ -411,7 +417,8 @@ const MAP = (() => {
       extras: {
         flightIn: flightInG, flightInPath, planeIn,
         flightOut: flightOutG, flightOutPath, planeOut,
-        taxi: taxiG, trips: tripsG, metro: metroG, depart: departG,
+        taxi: taxiG, taxiPaths, taxiLen,
+        trips: tripsG, metro: metroG, depart: departG,
       },
     };
   }
