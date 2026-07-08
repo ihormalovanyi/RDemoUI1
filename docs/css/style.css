@@ -219,6 +219,28 @@ body {
   font-weight: 400;
 }
 
+/* Дві глави картки: «як дісталися» і «зупинка» */
+.chapter { margin-top: 16px; }
+.chapter + .chapter { margin-top: 15px; }
+
+.chapter-label {
+  display: block;
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  font-weight: 800; margin-bottom: 6px;
+}
+.chapter p { margin: 0; }
+
+.chapter.way .chapter-label { color: var(--ink-dim); }
+.chapter.way p {
+  font-size: 13px; line-height: 1.62; color: var(--ink-dim);
+  font-style: italic;
+}
+
+.chapter.stay .chapter-label { color: var(--accent); }
+.chapter.stay p {
+  font-size: 15px; line-height: 1.72; color: var(--ink);
+}
+
 .card .leg {
   margin-top: 20px; padding-top: 16px;
   border-top: 1px dashed rgba(224, 164, 88, 0.35);
