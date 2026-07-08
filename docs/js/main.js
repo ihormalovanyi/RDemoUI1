@@ -244,9 +244,16 @@
       }
     });
 
-    /* активна точка навігації */
+    /* Активний етап історії: перемикається в момент відправлення —
+       щойно камера рушила з міста, панель уже розповідає про наступне. */
     let active = 0;
-    navKF.forEach((kf, i) => { if (scrollY > kf.y - vh * 0.5) active = i; });
+    for (let i = 1; i < ORDER.length; i++) {
+      let thr;
+      if (i === 1) thr = sections[1].offsetTop * 0.55;              /* політ — коли титул розтанув */
+      else if (i === ORDER.length - 1) thr = sections[i].offsetTop; /* титри — з початком фіналу */
+      else thr = navKF[i - 1].y + vh * 0.3;                         /* виїхали — читаємо про наступне */
+      if (scrollY > thr) active = i;
+    }
     navBtns.forEach((b, i) => b.classList.toggle('active', i === active));
 
     /* панель з інформацією: постійно на екрані, вміст міняється зі зміною етапу */
@@ -259,7 +266,7 @@
       });
     }
 
-    /* пульс активної зупинки */
+    /* пульс активної зупинки — пункт призначення */
     const activeKey = ORDER[active];
     Object.entries(map.stopNodes).forEach(([k, node]) => {
       node.querySelector('.pulse').setAttribute('opacity', k === activeKey ? 1 : 0);
