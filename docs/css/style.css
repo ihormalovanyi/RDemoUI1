@@ -255,6 +255,10 @@ body {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
 
+.photos.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.photos.grid-2 .photo { aspect-ratio: 1 / 1; }
+.photos.grid-2 .photo:nth-child(4) { --tilt: 1deg; }
+
 .photo {
   position: relative; aspect-ratio: 3 / 4; overflow: hidden;
   border-radius: 8px;
