@@ -1,0 +1,331 @@
+/* ============================================================
+   Дорога на двох — кінематографічна мапа подорожі
+   ============================================================ */
+
+:root {
+  --ink: #e8e2d4;
+  --ink-dim: #b9b2a0;
+  --accent: #e0a458;
+  --accent-2: #d96c4f;
+  --bg: #0d1420;
+  --card-bg: rgba(13, 19, 30, 0.82);
+  --card-border: rgba(224, 164, 88, 0.28);
+  --serif: "Cormorant Garamond", "Georgia", serif;
+  --sans: "Manrope", system-ui, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+/* ---------- сцена з мапою ---------- */
+
+#map-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg);
+}
+
+#map { width: 100%; height: 100%; display: block; }
+
+/* ---------- кіно-шари ---------- */
+
+.vignette {
+  position: fixed; inset: 0; z-index: 3; pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 45%, transparent 55%, rgba(4, 7, 12, 0.55) 100%);
+}
+
+.grain {
+  position: fixed; inset: -100px; z-index: 4; pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(4) infinite;
+}
+
+@keyframes grain {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-34px, 18px); }
+  50%  { transform: translate(22px, -40px); }
+  75%  { transform: translate(-12px, -22px); }
+  100% { transform: translate(0, 0); }
+}
+
+.letterbox {
+  position: fixed; left: 0; right: 0; z-index: 5; pointer-events: none;
+  background: #04070c;
+  height: var(--lb, 0px);
+  transition: none;
+}
+.letterbox.top { top: 0; }
+.letterbox.bottom { bottom: 0; }
+
+/* ---------- навігація-етапи ---------- */
+
+#waypoints {
+  position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
+  z-index: 6; display: flex; flex-direction: column; gap: 16px;
+}
+
+#waypoints button {
+  position: relative;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 2px;
+}
+
+#waypoints button i {
+  display: block; width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(232, 226, 212, 0.35);
+  border: 1px solid rgba(232, 226, 212, 0.45);
+  transition: all 0.35s ease;
+}
+
+#waypoints button.active i {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(224, 164, 88, 0.8);
+  transform: scale(1.35);
+}
+
+#waypoints button span {
+  position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-dim); white-space: nowrap;
+  opacity: 0; transition: opacity 0.25s ease; pointer-events: none;
+}
+
+#waypoints button:hover span,
+#waypoints button.active span { opacity: 1; }
+
+/* ---------- скрол-панелі ---------- */
+
+#scroll { position: relative; z-index: 2; }
+
+.panel { position: relative; }
+
+#s-hero        { height: 220vh; }
+#s-arrival     { height: 340vh; }
+#s-pineda      { height: 260vh; }
+#s-narbonne    { height: 300vh; }
+#s-carcassonne { height: 260vh; }
+#s-barcelona   { height: 300vh; }
+#s-finale      { height: 260vh; }
+
+.pin {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center;
+  pointer-events: none;
+  padding: 0 6vw;
+}
+
+/* ---------- герой / фінал ---------- */
+
+.hero-content {
+  margin: 0 auto; text-align: center; max-width: 900px;
+  will-change: opacity, transform;
+}
+
+.kicker {
+  font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 26px; font-weight: 600;
+}
+
+.hero-content h1 {
+  font-family: var(--serif);
+  font-size: clamp(64px, 12vw, 168px);
+  line-height: 0.95; font-weight: 600;
+  text-shadow: 0 4px 60px rgba(4, 7, 12, 0.9);
+}
+
+.hero-content h1.small { font-size: clamp(44px, 7vw, 96px); line-height: 1.05; }
+
+.route-line {
+  margin-top: 34px;
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(17px, 2.2vw, 26px);
+  color: var(--ink-dim); letter-spacing: 0.04em;
+}
+.route-line span { color: var(--accent); font-style: normal; padding: 0 6px; }
+
+.scroll-hint {
+  margin-top: 60px; font-size: 12px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--ink-dim); line-height: 2.2;
+}
+.scroll-hint .arrow { display: inline-block; font-size: 20px; animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(9px); } }
+
+.credits {
+  margin-top: 42px; font-size: 12px; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+
+/* ---------- картки етапів ---------- */
+
+/* Картка — постійна панель: десктоп ліворуч, мобільний знизу.
+   Вміст змінюється лише при зміні етапу (клас .on). */
+.card {
+  position: fixed;
+  left: 5vw;
+  top: 50%;
+  z-index: 2;
+  width: min(460px, 88vw);
+  background: rgba(13, 19, 30, 0.94);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 32px 34px 24px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(calc(-50% + 26px));
+  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0s linear 0.55s;
+  will-change: transform, opacity;
+}
+
+.card.on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.stage-no {
+  font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase;
+  color: var(--accent); font-weight: 800; margin-bottom: 10px;
+}
+
+.card h2 {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(40px, 5vw, 58px); line-height: 1;
+}
+
+.card .meta {
+  margin-top: 8px; font-size: 12.5px; letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.card .story {
+  margin-top: 18px; font-size: 15px; line-height: 1.75; color: var(--ink);
+  font-weight: 400;
+}
+
+/* Дві глави картки: «як дісталися» і «зупинка» */
+.chapter { margin-top: 16px; }
+.chapter + .chapter { margin-top: 15px; }
+
+.chapter-label {
+  display: block;
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  font-weight: 800; margin-bottom: 6px;
+}
+.chapter p { margin: 0; }
+
+.chapter.way .chapter-label { color: var(--ink-dim); }
+.chapter.way p {
+  font-size: 13px; line-height: 1.62; color: var(--ink-dim);
+  font-style: italic;
+}
+
+.chapter.stay .chapter-label { color: var(--accent); }
+.chapter.stay p {
+  font-size: 15px; line-height: 1.72; color: var(--ink);
+}
+
+.card .leg {
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px dashed rgba(224, 164, 88, 0.35);
+  font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* ---------- фото ---------- */
+
+.photos {
+  margin-top: 22px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+
+.photos.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.photos.grid-2 .photo { aspect-ratio: 1 / 1; }
+.photos.grid-2 .photo:nth-child(4) { --tilt: 1deg; }
+
+.photo {
+  position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(160deg, rgba(224, 164, 88, 0.24), rgba(217, 108, 79, 0.12) 55%, rgba(13, 20, 32, 0.6));
+  border: 1px solid rgba(232, 226, 212, 0.14);
+  transform: rotate(var(--tilt, 0deg));
+}
+.photo:nth-child(1) { --tilt: -1.6deg; }
+.photo:nth-child(2) { --tilt: 1.1deg; }
+.photo:nth-child(3) { --tilt: -0.8deg; }
+
+.photo::before {
+  content: attr(data-ph);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-style: italic;
+  font-size: 44px; color: rgba(232, 226, 212, 0.35);
+}
+
+.photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 0.6s ease;
+}
+.photo img.loaded { opacity: 1; }
+
+.photo figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+  padding: 18px 8px 7px;
+  font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  text-align: center; color: rgba(232, 226, 212, 0.8);
+  background: linear-gradient(transparent, rgba(4, 7, 12, 0.75));
+}
+
+/* ---------- адаптив ---------- */
+
+@media (max-width: 760px) {
+  .pin { padding: 0 5vw; }
+
+  /* на телефоні картка — завжди нижній лист */
+  .card {
+    left: 3vw; right: 3vw; top: auto; bottom: 2.5vh;
+    width: auto;
+    padding: 22px 20px 16px;
+    max-height: 58vh; overflow-y: auto;
+    transform: translateY(115%);
+    transition: transform 0.55s cubic-bezier(0.22, 0.9, 0.3, 1), visibility 0s linear 0.55s;
+    opacity: 1;
+  }
+
+  .card.on {
+    transform: translateY(0);
+    transition: transform 0.55s cubic-bezier(0.22, 0.9, 0.3, 1);
+  }
+
+  .card h2 { font-size: 32px; }
+  .card .story { font-size: 14px; line-height: 1.65; }
+  .photos { gap: 8px; }
+
+  #waypoints { right: 10px; gap: 12px; }
+  #waypoints button span { display: none; }
+
+  .hero-content { text-align: center; margin-bottom: 10vh; }
+  .letterbox { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+  .scroll-hint .arrow { animation: none; }
+}

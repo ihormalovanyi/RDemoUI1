@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Road for Two · La Pineda — Barcelona</title>
+  <meta name="description" content="A cinematic map of our road trip: La Pineda → Narbonne → Carcassonne → Barcelona">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Road for Two · La Pineda — Barcelona">
+  <meta property="og:description" content="A cinematic map of our road trip: Bratislava ✈ La Pineda → Narbonne → Carcassonne → Barcelona. 200,000 steps, 130 km on foot, one story.">
+  <meta property="og:image" content="https://ihormalovanyi.github.io/RDemoUI1/assets/og.png">
+  <meta property="og:url" content="https://ihormalovanyi.github.io/RDemoUI1/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+</head>
+<body>
+
+  <!-- Cinematic map: fixed stage behind the content -->
+  <div id="map-stage" aria-hidden="true">
+    <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="letterbox top" aria-hidden="true"></div>
+  <div class="letterbox bottom" aria-hidden="true"></div>
+
+  <!-- Stage navigation -->
+  <nav id="waypoints" aria-label="Route stages">
+    <button data-goto="hero"        title="Start"><i></i><span>Start</span></button>
+    <button data-goto="arrival"     title="The flight"><i></i><span>The flight</span></button>
+    <button data-goto="pineda"      title="La Pineda"><i></i><span>La Pineda</span></button>
+    <button data-goto="narbonne"    title="Narbonne"><i></i><span>Narbonne</span></button>
+    <button data-goto="carcassonne" title="Carcassonne"><i></i><span>Carcassonne</span></button>
+    <button data-goto="barcelona"   title="Barcelona"><i></i><span>Barcelona</span></button>
+    <button data-goto="finale"      title="Credits"><i></i><span>Credits</span></button>
+  </nav>
+
+  <main id="scroll">
+
+    <section class="panel" id="s-hero" data-stage="hero">
+      <div class="pin">
+        <div class="hero-content">
+          <p class="kicker">a road movie for two · 25 june — 8 july 2026</p>
+          <h1>Road<br>for&nbsp;Two</h1>
+          <p class="route-line">
+            La Pineda <span>→</span> Narbonne <span>→</span> Carcassonne <span>→</span> Barcelona
+          </p>
+          <p class="scroll-hint">scroll to set off<br><span class="arrow">↓</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="s-arrival" data-stage="arrival">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">00 · night arrival</p>
+            <h2>The Flight</h2>
+            <p class="meta">25.06 · Bratislava → Barcelona El Prat</p>
+          </header>
+          <p class="story">
+            We land just in time to watch the last bus leave.
+            A night taxi down the coast instead — asleep in La Pineda by midnight.
+          </p>
+          <footer class="leg">taxi · ~100 km along the coast</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-pineda" data-stage="pineda">
+      <div class="pin">
+        <article class="card side-left">
+          <header>
+            <p class="stage-no">01 · the start</p>
+            <h2>La Pineda</h2>
+            <p class="meta">Costa Daurada, Spain · 25–30.06</p>
+          </header>
+          <div class="chapter way">
+            <span class="chapter-label">the way here</span>
+            <p>Night taxi from El Prat, down the coast — we missed the last bus.</p>
+          </div>
+          <div class="chapter stay">
+            <span class="chapter-label">the stay</span>
+            <p>Five slow days on the Costa Daurada: golden sand, a shallow warm
+            sea, the long promenade and unhurried breakfasts. Day trips out —
+            Roman Tarragona on the 26th, seaside Salou on the 27th.</p>
+          </div>
+          <!-- journal: step-by-step notes go here -->
+          <div class="photos grid-2">
+            <figure class="photo" data-ph="P"><img data-src="photos/pineda-1.jpg" alt="La Pineda beach at golden hour"><figcaption>La Pineda, golden hour</figcaption></figure>
+            <figure class="photo" data-ph="I"><img data-src="photos/pineda-2.jpg" alt="The bay from above"><figcaption>the bay from above</figcaption></figure>
+            <figure class="photo" data-ph="T"><img data-src="photos/pineda-3.jpg" alt="Roman amphitheatre in Tarragona"><figcaption>Tarragona · amfiteatre</figcaption></figure>
+            <figure class="photo" data-ph="S"><img data-src="photos/pineda-4.jpg" alt="Modernista building in Salou"><figcaption>Salou · modernista</figcaption></figure>
+          </div>
+          <footer class="leg">next · Narbonne</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-narbonne" data-stage="narbonne">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">02 · crossing the border</p>
+            <h2>Narbonne</h2>
+            <p class="meta">Occitanie, France · 30.06–01.07</p>
+          </header>
+          <div class="chapter way">
+            <span class="chapter-label">the way here</span>
+            <p>Bus to Tarragona, bus to Camp de Tarragona, then a high-speed
+            train across the border into France.</p>
+          </div>
+          <div class="chapter stay">
+            <span class="chapter-label">the stay</span>
+            <p>Two days in Rome's first colony in Gaul. The Canal de la Robine,
+            croissants under the iron roof of Les Halles, and the Via Domitia —
+            an ancient Roman road bared in the middle of the main square.</p>
+          </div>
+          <!-- journal: step-by-step notes go here -->
+          <div class="photos">
+            <figure class="photo" data-ph="N"><img data-src="photos/narbonne-1.jpg" alt="Narbonne — photo 1"><figcaption>Canal de la Robine</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/narbonne-2.jpg" alt="Narbonne — photo 2"><figcaption>Les Halles</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/narbonne-3.jpg" alt="Narbonne — photo 3"><figcaption>old town</figcaption></figure>
+          </div>
+          <footer class="leg">next · Carcassonne</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-carcassonne" data-stage="carcassonne">
+      <div class="pin">
+        <article class="card side-left">
+          <header>
+            <p class="stage-no">03 · the middle ages</p>
+            <h2>Carcassonne</h2>
+            <p class="meta">UNESCO citadel · 01–03.07</p>
+          </header>
+          <div class="chapter way">
+            <span class="chapter-label">the way here</span>
+            <p>Thirty minutes by local train from Narbonne.</p>
+          </div>
+          <div class="chapter stay">
+            <span class="chapter-label">the stay</span>
+            <p>Two days between the lower town and the medieval Cité — 52 towers
+            and a double ring of walls above the Aude. On the 2nd, a concert
+            inside the fortress itself: Clair Obscur: Expedition&nbsp;33 —
+            A&nbsp;Painted Symphony.</p>
+          </div>
+          <!-- journal: step-by-step notes go here -->
+          <div class="photos">
+            <figure class="photo" data-ph="C"><img data-src="photos/carcassonne-1.jpg" alt="Carcassonne — photo 1"><figcaption>La Cité from afar</figcaption></figure>
+            <figure class="photo" data-ph="A"><img data-src="photos/carcassonne-2.jpg" alt="Carcassonne — photo 2"><figcaption>between the walls</figcaption></figure>
+            <figure class="photo" data-ph="R"><img data-src="photos/carcassonne-3.jpg" alt="Carcassonne — photo 3"><figcaption>sunset</figcaption></figure>
+          </div>
+          <footer class="leg">next · Barcelona</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-barcelona" data-stage="barcelona">
+      <div class="pin">
+        <article class="card side-right">
+          <header>
+            <p class="stage-no">04 · the finale</p>
+            <h2>Barcelona</h2>
+            <p class="meta">Catalonia, Spain · 03–08.07 · staying in Badalona</p>
+          </header>
+          <div class="chapter way">
+            <span class="chapter-label">the way here</span>
+            <p>Bus back over the mountains, then the metro out to Badalona.</p>
+          </div>
+          <div class="chapter stay">
+            <span class="chapter-label">the stay</span>
+            <p>Five days based in Badalona, wandering Barcelona on foot: Park
+            Güell, the Sagrada Família, Plaça de Catalunya and the old streets.
+            The aquarium and the waterfront, Ciutadella park — and quiet evenings
+            on Badalona's own beach.</p>
+          </div>
+          <!-- journal: step-by-step notes go here -->
+          <div class="photos">
+            <figure class="photo" data-ph="B"><img data-src="photos/barcelona-1.jpg" alt="Barcelona — photo 1"><figcaption>Sagrada Família</figcaption></figure>
+            <figure class="photo" data-ph="C"><img data-src="photos/barcelona-2.jpg" alt="Barcelona — photo 2"><figcaption>Gothic Quarter</figcaption></figure>
+            <figure class="photo" data-ph="N"><img data-src="photos/barcelona-3.jpg" alt="Barcelona — photo 3"><figcaption>Barceloneta</figcaption></figure>
+          </div>
+          <footer class="leg">08.07 · metro to the airport, flight home</footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="s-finale" data-stage="finale">
+      <div class="pin">
+        <div class="hero-content finale-content">
+          <p class="kicker">credits</p>
+          <h1 class="small">200,000 steps.<br>130 km on foot.<br>One story.</h1>
+          <p class="route-line">La Pineda · Narbonne · Carcassonne · Barcelona</p>
+          <p class="credits">25.06 → 08.07 · shot &amp; directed by the two of us</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/map.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
